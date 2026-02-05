@@ -67,6 +67,17 @@ const Home = () => {
                     ease: "power2.inOut"
                 }, "<");
 
+
+                // Header Color Transition (Desktop)
+                // Select elements globally because Header is outside this component's scope
+                // Duration 0.05 at position 0 ensures immediate change on first scroll
+                const brandLogo = document.querySelector(".brand-logo");
+                const btnMenu = document.querySelector(".btn-menu");
+                const menuBars = document.querySelectorAll(".btn-menu .bar");
+
+                if (brandLogo) tl.to(brandLogo, { color: "#e9eae4", duration: 0.2, ease: "none" }, 0);
+                if (btnMenu) tl.to(btnMenu, { borderColor: "#e9eae4", duration: 0.2, ease: "none" }, 0);
+                if (menuBars.length) tl.to(menuBars, { backgroundColor: "#e9eae4", duration: 0.2, ease: "none" }, 0);
             });
 
             // 2. Mobile/Tablet Portrait (Vertical Screens)
@@ -81,6 +92,16 @@ const Home = () => {
                     height: "45vw", // Strictly 16:9 of 80vw
                     ease: "power2.inOut",
                 });
+
+
+                // Header Color Transition (Mobile)
+                const brandLogoM = document.querySelector(".brand-logo");
+                const btnMenuM = document.querySelector(".btn-menu");
+                const menuBarsM = document.querySelectorAll(".btn-menu .bar");
+
+                if (brandLogoM) tl.to(brandLogoM, { color: "#e9eae4", duration: 0.05, ease: "none" }, 0);
+                if (btnMenuM) tl.to(btnMenuM, { borderColor: "#e9eae4", duration: 0.05, ease: "none" }, 0);
+                if (menuBarsM.length) tl.to(menuBarsM, { backgroundColor: "#e9eae4", duration: 0.05, ease: "none" }, 0);
 
                 // Zoom effect for mobile
                 tl.to(".hero-card-inner", {
