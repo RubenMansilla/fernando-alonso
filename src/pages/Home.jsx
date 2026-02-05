@@ -66,13 +66,13 @@ const Home = () => {
                 }, "<");
 
                 // Hide the animated blobs/lines (now videos) so they don't show through the tint
-                tl.to(".bg-video-wrapper", {
+                tl.to(".hero-card-inner .bg-video-wrapper", {
                     opacity: 0,
                     ease: "power2.inOut"
                 }, "<");
 
                 // Change background color of animated-bg
-                tl.to(".animated-bg", {
+                tl.to(".hero-card-inner .animated-bg", {
                     backgroundColor: "#494d40",
                     ease: "power2.inOut"
                 }, "<");
@@ -151,13 +151,13 @@ const Home = () => {
                 }, "<");
 
                 // Hide blobs (videos) on mobile too
-                tl.to(".bg-video-wrapper", {
+                tl.to(".hero-card-inner .bg-video-wrapper", {
                     opacity: 0,
                     ease: "power2.inOut"
                 }, "<");
 
-                // Change background color of animated-bg (Mobile)
-                tl.to(".animated-bg", {
+                // Change background color of animated-bg
+                tl.to(".hero-card-inner .animated-bg", {
                     backgroundColor: "#494d40",
                     ease: "power2.inOut"
                 }, "<");

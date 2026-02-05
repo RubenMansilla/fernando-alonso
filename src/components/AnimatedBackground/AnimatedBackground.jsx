@@ -4,13 +4,17 @@ import React, { useRef, useState, useEffect } from 'react';
 import videoForwardSrc from '../../assets/video/video-topografia.mp4';
 import videoReverseSrc from '../../assets/video/video-topografia-reverse.mp4';
 
-const AnimatedBackground = () => {
+const AnimatedBackground = ({
+    backgroundColor = "#F9F9F4",
+    containerPosition = "fixed",
+    videoOpacity = 0.15,
+    videoFilter = "invert(1) contrast(1.2)",
+    videoMixBlendMode = "multiply",
+    zIndex = -1
+}) => {
     const videoForwardRef = useRef(null);
     const videoReverseRef = useRef(null);
     const [activeVideo, setActiveVideo] = useState('forward');
-
-    // CONFIGURACIÓN DE COLORES
-    const desiredBackgroundColor = "#F9F9F4";
 
     // MANEJO DEL BUCLE (Loop)
     const handleForwardEnded = () => {
@@ -44,33 +48,30 @@ const AnimatedBackground = () => {
         height: '100%',
         objectFit: 'cover',
 
-        // 1. invert(1): Convierte líneas blancas en negras.
-        // 2. contrast(1.2): Asegura que el negro sea puro para que el color sea constante.
-        filter: 'invert(1) contrast(1.2)',
+        // 1. invert(1): Convierte líneas blancas en negras. (Configurable)
+        // 2. contrast(1.2): Asegura que el negro sea puro. (Configurable)
+        filter: videoFilter,
 
-        // 3. multiply: Elimina lo blanco y deja lo oscuro (las líneas).
-        mixBlendMode: 'multiply',
+        // 3. multiply: Elimina lo blanco y deja lo oscuro. (Configurable)
+        mixBlendMode: videoMixBlendMode,
 
-        // 4. opacity 0.15: AQUÍ ESTÁ LA CLAVE DEL COLOR #e9e9df
-        // Al poner líneas negras al 15% de opacidad sobre tu fondo beige,
-        // se crea visualmente el tono #e9e9df (gris piedra claro).
-        // - Si lo quieres más claro: baja a 0.1
-        // - Si lo quieres más oscuro: sube a 0.2
-        opacity: 0.15,
+        // 4. opacity: Configurable
+        opacity: videoOpacity,
 
         transition: 'opacity 0.1s linear',
     };
 
     const styles = {
         container: {
-            position: 'fixed',
+            position: containerPosition,
             top: 0,
             left: 0,
             width: '100%',
-            height: '100vh',
-            zIndex: -1,
+            height: '100%', // Changed from 100vh to 100% to fill container if absolute
+            minHeight: '100vh', // Ensure at least full screen height
+            zIndex: zIndex,
             overflow: 'hidden',
-            backgroundColor: desiredBackgroundColor,
+            backgroundColor: backgroundColor,
         },
         wrapper: {
             position: 'absolute',
@@ -81,12 +82,12 @@ const AnimatedBackground = () => {
         },
         videoForward: {
             ...commonVideoStyle,
-            opacity: activeVideo === 'forward' ? 0.15 : 0, // Usamos la misma opacidad definida arriba
+            opacity: activeVideo === 'forward' ? videoOpacity : 0,
             zIndex: 1,
         },
         videoReverse: {
             ...commonVideoStyle,
-            opacity: activeVideo === 'reverse' ? 0.15 : 0,
+            opacity: activeVideo === 'reverse' ? videoOpacity : 0,
             zIndex: 1,
         }
     };

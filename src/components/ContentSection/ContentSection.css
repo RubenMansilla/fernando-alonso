@@ -10,6 +10,7 @@
     /* Light off-white for text */
     overflow: hidden;
     position: relative;
+    isolation: isolate;
 }
 
 .text-row {
