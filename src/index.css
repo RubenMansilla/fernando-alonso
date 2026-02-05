@@ -19,10 +19,22 @@
   box-sizing: border-box;
 }
 
+html {
+  scrollbar-width: none;
+  /* Firefox: Hide scrollbar */
+  -ms-overflow-style: none;
+  /* IE/Edge: Hide scrollbar */
+}
+
 body {
   margin: 0;
   overflow-x: hidden;
   /* Keep cursor hidden as per original design */
   min-width: 320px;
   min-height: 100vh;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
 }

@@ -1,0 +1,29 @@
+.custom-scrollbar-track {
+    position: fixed;
+    top: 70px;
+    /* Offset for Header (24px padding * 2 + ~48px content) */
+    right: 0px;
+    /* Slight offset from edge */
+    width: 6px;
+    height: calc(100vh - 96px);
+    /* Remaining height */
+    background: transparent;
+    z-index: 9999;
+    pointer-events: none;
+    /* Let clicks pass through */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.custom-scrollbar-track.visible {
+    opacity: 1;
+}
+
+.custom-scrollbar-thumb {
+    width: 100%;
+    /* Height is set inline in JS */
+    background-color: var(--sb-thumb-color, #414142);
+    /* Default to dark grey (Hero state) */
+    border-radius: 10px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}

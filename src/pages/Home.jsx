@@ -82,6 +82,14 @@ const Home = () => {
                 if (brandLogo) tl.to(brandLogo, { color: "#e9eae4", duration: 0.2, ease: "none" }, 0);
                 if (btnMenu) tl.to(btnMenu, { borderColor: "#e9eae4", duration: 0.2, ease: "none" }, 0);
                 if (menuBars.length) tl.to(menuBars, { backgroundColor: "#e9eae4", duration: 0.2, ease: "none" }, 0);
+
+                // Scrollbar Color Transition (Dark -> Lighter Grey)
+                // "First scroll" effect: Rapid transition to #8f8f91
+                tl.fromTo(document.body,
+                    { "--sb-thumb-color": "#414142" },
+                    { "--sb-thumb-color": "#aba9af", duration: 0.15, ease: "none" },
+                    0
+                );
             });
 
             // 2. Mobile/Tablet Portrait (Vertical Screens)
@@ -110,6 +118,13 @@ const Home = () => {
                 if (brandLogoM) tl.to(brandLogoM, { color: "#e9eae4", duration: 0.05, ease: "none" }, 0);
                 if (btnMenuM) tl.to(btnMenuM, { borderColor: "#e9eae4", duration: 0.05, ease: "none" }, 0);
                 if (menuBarsM.length) tl.to(menuBarsM, { backgroundColor: "#e9eae4", duration: 0.05, ease: "none" }, 0);
+
+                // Scrollbar Color Transition (Mobile)
+                tl.fromTo(document.body,
+                    { "--sb-thumb-color": "#414142" },
+                    { "--sb-thumb-color": "#8f8f91", duration: 0.15, ease: "none" },
+                    0
+                );
 
                 // Zoom effect for mobile
                 tl.to(".hero-card-inner", {
