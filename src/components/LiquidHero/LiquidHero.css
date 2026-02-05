@@ -17,3 +17,17 @@ svg#stage {
 #fluidVisual {
     opacity: 0.92;
 }
+
+@keyframes wipeScan {
+    0% {
+        y: -20%;
+    }
+
+    100% {
+        y: 100%;
+    }
+}
+
+.wireframe-wipe {
+    animation: wipeScan 1.2s linear infinite;
+}

@@ -2,12 +2,14 @@ import React, { useEffect, useRef } from 'react';
 import './LiquidHero.css';
 import diffuseImg from '../../assets/diffuse.png';
 import cascoImg from '../../assets/casco.webp';
+import wireframeImg from '../../assets/cascovacio.png';
 
 const LiquidHero = () => {
     const containerRef = useRef(null);
     const svgRef = useRef(null);
     const baseImgRef = useRef(null);
     const revealImgRef = useRef(null);
+    const wireframeImgRef = useRef(null);
     const maskPathRef = useRef(null);
 
     useEffect(() => {
@@ -15,13 +17,14 @@ const LiquidHero = () => {
         const svg = svgRef.current;
         const baseImg = baseImgRef.current;
         const revealImg = revealImgRef.current;
+        const wireframeImg = wireframeImgRef.current;
         const maskPath = maskPathRef.current;
 
-        if (!container || !svg || !baseImg || !revealImg || !maskPath) return;
+        if (!container || !svg || !baseImg || !revealImg || !wireframeImg || !maskPath) return;
 
         // ====== CONFIGURACIÓN DE GOTA ======
         const TRAIL_COUNT = 26;
-        const BASE_R = 180;
+        const BASE_R = 120;
         const LERP_HEAD = 0.6;
         const LERP_TAIL = 0.4;
         // ===================================
@@ -85,6 +88,13 @@ const LiquidHero = () => {
                     revealImg.setAttribute("width", revealW);
                     revealImg.setAttribute("height", revealH);
                     revealImg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+                    // Wireframe logic (identical position to revealImg)
+                    wireframeImg.setAttribute("x", revealX);
+                    wireframeImg.setAttribute("y", revealY);
+                    wireframeImg.setAttribute("width", revealW);
+                    wireframeImg.setAttribute("height", revealH);
+                    wireframeImg.setAttribute("preserveAspectRatio", "xMidYMid meet");
                 });
             });
         };
@@ -275,7 +285,7 @@ const LiquidHero = () => {
             } else {
                 let visible = 0;
                 for (const p of trail) {
-                    p.r *= 0.8;
+                    p.r *= 0.94;
                     if (p.r < 0.5) p.r = 0;
                     else visible++;
                 }
@@ -367,6 +377,9 @@ const LiquidHero = () => {
                             <path id="maskPath" fill="white" ref={maskPathRef}></path>
                         </g>
                     </mask>
+                    <mask id="wireframeMask">
+                        <rect class="wireframe-wipe" x="0" y="-15%" width="100%" height="15%" fill="white" />
+                    </mask>
                 </defs>
 
                 <image id="baseImg" href={diffuseImg} opacity="1" ref={baseImgRef} />
@@ -375,8 +388,9 @@ const LiquidHero = () => {
                     <rect x="0" y="0" width="100%" height="100%" fill="#e9eae4" opacity="0.35" />
                     <image id="revealImg" href={cascoImg} opacity="1" ref={revealImgRef} />
                 </g>
+                <image id="wireframeImg" href={wireframeImg} opacity="0.3" mask="url(#wireframeMask)" ref={wireframeImgRef} />
             </svg>
-        </div>
+        </div >
     );
 };
 
