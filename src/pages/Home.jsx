@@ -46,8 +46,8 @@ const Home = () => {
                 tl.fromTo(heroAnimRef.current,
                     { width: "100vw", height: "100vh" },
                     {
-                        width: "32vw",
-                        height: "18vw", // Strictly 16:9 of 32vw
+                        width: "35vw",
+                        height: "22vw", // Strictly 16:9 of 32vw
                         ease: "none",
                     }
                 );
@@ -68,6 +68,18 @@ const Home = () => {
                 // Hide the animated blobs/lines so they don't show through the tint
                 tl.to(".animated-bg svg", {
                     opacity: 0,
+                    ease: "power2.inOut"
+                }, "<");
+
+                // Change background color of animated-bg
+                tl.to(".animated-bg", {
+                    backgroundColor: "#494d40",
+                    ease: "power2.inOut"
+                }, "<");
+
+                // Reduce baseImg opacity (but keep visible)
+                tl.to("#baseImg", {
+                    opacity: 0.4,
                     ease: "power2.inOut"
                 }, "<");
 
@@ -104,7 +116,7 @@ const Home = () => {
                     { width: "100vw", height: "100vh" },
                     {
                         width: "80vw",
-                        height: "45vw", // Strictly 16:9 of 80vw
+                        height: "55vw", // Strictly 16:9 of 80vw
                         ease: "none",
                     }
                 );
@@ -141,6 +153,18 @@ const Home = () => {
                 // Hide blobs on mobile too
                 tl.to(".animated-bg svg", {
                     opacity: 0,
+                    ease: "power2.inOut"
+                }, "<");
+
+                // Change background color of animated-bg (Mobile)
+                tl.to(".animated-bg", {
+                    backgroundColor: "#494d40",
+                    ease: "power2.inOut"
+                }, "<");
+
+                // Reduce baseImg opacity (Mobile)
+                tl.to("#baseImg", {
+                    opacity: 0.3,
                     ease: "power2.inOut"
                 }, "<");
 
