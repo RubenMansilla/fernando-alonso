@@ -1,0 +1,114 @@
+/* HEADER STYLES */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    pointer-events: none;
+    /* Let clicks pass through empty areas */
+}
+
+.main-header * {
+    pointer-events: auto;
+    /* Re-enable clicks on kids */
+}
+
+.brand-logo {
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    text-transform: uppercase;
+    line-height: 0.85;
+    color: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.brand-logo .fname {
+    font-size: 28px;
+    font-weight: 300;
+    /* Lighter top name */
+    letter-spacing: -0.5px;
+}
+
+.brand-logo .lname {
+    font-size: 28px;
+    font-weight: 800;
+    /* Bold bottom name */
+    letter-spacing: -1px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.btn-store {
+    background-color: #dfff00;
+    /* Acid yellow like reference */
+    color: #000;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-store:hover {
+    transform: scale(1.05);
+}
+
+.btn-menu {
+    width: 44px;
+    height: 44px;
+    border: 2px solid #1a1a1a;
+    border-radius: 8px;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-menu:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.bar {
+    width: 20px;
+    height: 2px;
+    background-color: #1a1a1a;
+    display: block;
+}
+
+.bar.short {
+    width: 14px;
+    margin-right: -6px;
+    /* Align right visual effect from reference */
+}
+
+/* Adjust icon svg in button */
+.icon-bag {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
