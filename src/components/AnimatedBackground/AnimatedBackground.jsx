@@ -72,6 +72,13 @@ const AnimatedBackground = () => {
             overflow: 'hidden',
             backgroundColor: desiredBackgroundColor,
         },
+        wrapper: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+        },
         videoForward: {
             ...commonVideoStyle,
             opacity: activeVideo === 'forward' ? 0.15 : 0, // Usamos la misma opacidad definida arriba
@@ -85,29 +92,31 @@ const AnimatedBackground = () => {
     };
 
     return (
-        <div style={styles.container}>
-            <video
-                ref={videoForwardRef}
-                autoPlay
-                muted
-                playsInline
-                preload="auto"
-                onEnded={handleForwardEnded}
-                style={styles.videoForward}
-            >
-                <source src={videoForwardSrc} type="video/mp4" />
-            </video>
+        <div style={styles.container} className="animated-bg">
+            <div className="bg-video-wrapper" style={styles.wrapper}>
+                <video
+                    ref={videoForwardRef}
+                    autoPlay
+                    muted
+                    playsInline
+                    preload="auto"
+                    onEnded={handleForwardEnded}
+                    style={styles.videoForward}
+                >
+                    <source src={videoForwardSrc} type="video/mp4" />
+                </video>
 
-            <video
-                ref={videoReverseRef}
-                muted
-                playsInline
-                preload="auto"
-                onEnded={handleReverseEnded}
-                style={styles.videoReverse}
-            >
-                <source src={videoReverseSrc} type="video/mp4" />
-            </video>
+                <video
+                    ref={videoReverseRef}
+                    muted
+                    playsInline
+                    preload="auto"
+                    onEnded={handleReverseEnded}
+                    style={styles.videoReverse}
+                >
+                    <source src={videoReverseSrc} type="video/mp4" />
+                </video>
+            </div>
         </div>
     );
 };

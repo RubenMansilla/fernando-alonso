@@ -65,8 +65,8 @@ const Home = () => {
                     ease: "power2.inOut"
                 }, "<");
 
-                // Hide the animated blobs/lines so they don't show through the tint
-                tl.to(".animated-bg svg", {
+                // Hide the animated blobs/lines (now videos) so they don't show through the tint
+                tl.to(".bg-video-wrapper", {
                     opacity: 0,
                     ease: "power2.inOut"
                 }, "<");
@@ -150,8 +150,8 @@ const Home = () => {
                     ease: "power2.inOut"
                 }, "<");
 
-                // Hide blobs on mobile too
-                tl.to(".animated-bg svg", {
+                // Hide blobs (videos) on mobile too
+                tl.to(".bg-video-wrapper", {
                     opacity: 0,
                     ease: "power2.inOut"
                 }, "<");

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import AnimatedBackground from '../AnimatedBackground/AnimatedBackground';
 import './ContentSection.css';
 
 const ContentSection = () => {
