@@ -21,8 +21,7 @@
 
 body {
   margin: 0;
-  overflow: hidden;
-  cursor: none;
+  overflow-x: hidden;
   /* Keep cursor hidden as per original design */
   min-width: 320px;
   min-height: 100vh;

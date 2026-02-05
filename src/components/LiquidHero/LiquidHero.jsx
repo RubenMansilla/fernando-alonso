@@ -4,13 +4,18 @@ import diffuseImg from '../../assets/diffuse.png';
 import cascoImg from '../../assets/casco.webp';
 import wireframeImg from '../../assets/cascovacio.png';
 
-const LiquidHero = () => {
+const LiquidHero = ({ disableAnimations }) => {
     const containerRef = useRef(null);
     const svgRef = useRef(null);
     const baseImgRef = useRef(null);
     const revealImgRef = useRef(null);
     const wireframeImgRef = useRef(null);
     const maskPathRef = useRef(null);
+
+    // Ref to track if we are currently resizing
+    const isResizingRef = useRef(false);
+    // Ref to store the timeout ID for debounce
+    const resizeTimeoutRef = useRef(null);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -43,12 +48,34 @@ const LiquidHero = () => {
 
         const resize = () => {
             if (!container) return;
-            // Use window dimensions to ensure full screen coverage if container is constrained
-            W = window.innerWidth;
-            H = window.innerHeight;
-            // Also update container style just in case of flex quirks
-            container.style.width = `${W}px`;
-            container.style.height = `${H}px`;
+
+            // Start resizing state
+            if (!isResizingRef.current) {
+                isResizingRef.current = true;
+            }
+
+            // Clear existing timeout
+            if (resizeTimeoutRef.current) {
+                clearTimeout(resizeTimeoutRef.current);
+            }
+
+            // Set timeout to end resizing state
+            resizeTimeoutRef.current = setTimeout(() => {
+                isResizingRef.current = false;
+                // Force an update to dimensions once resize ends to ensure accuracy
+                updateDimensions();
+            }, 200); // 200ms debounce
+
+            updateDimensions();
+        };
+
+        const updateDimensions = () => {
+            // Use container dimensions
+            W = container.clientWidth;
+            H = container.clientHeight;
+
+            // In case container is 0 (hidden), prevent errors
+            if (W === 0 || H === 0) return;
 
             svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
 
@@ -97,14 +124,17 @@ const LiquidHero = () => {
                     wireframeImg.setAttribute("preserveAspectRatio", "xMidYMid meet");
                 });
             });
-        };
+        }
+
+
+        // Use ResizeObserver for more robust container resizing detection
+        const resizeObserver = new ResizeObserver(resize);
+        resizeObserver.observe(container);
 
         // Initial resize
-        resize();
+        updateDimensions();
         // Force update after a short delay to ensure DOM is ready
-        setTimeout(resize, 100);
-
-        window.addEventListener("resize", resize);
+        setTimeout(updateDimensions, 100);
 
         // Logic functions
         function buildDropletPath() {
@@ -178,6 +208,12 @@ const LiquidHero = () => {
         }
 
         function animate() {
+            // PAUSE LOGIC: REMOVED to allow animation during scroll/resize
+            // if (isResizingRef.current) {
+            //     animationFrameId = requestAnimationFrame(animate);
+            //     return;
+            // }
+
             const now = Date.now();
 
             // --- AUTO MOVE LOGIC ---
@@ -300,7 +336,7 @@ const LiquidHero = () => {
 
         // Interaction Handler
         const handleMove = (cx, cy) => {
-            if (!svg) return;
+            if (!svg) return; // Removed isResizingRef check to allow scroll interaction
             const rect = svg.getBoundingClientRect();
             target.x = cx - rect.left;
             target.y = cy - rect.top;
@@ -336,12 +372,16 @@ const LiquidHero = () => {
 
         // Cleanup
         return () => {
-            window.removeEventListener("resize", resize);
+            // Stop observing
+            if (resizeObserver) {
+                resizeObserver.disconnect();
+            }
             window.removeEventListener("mousemove", onMouseMove);
             window.removeEventListener("touchstart", onTouch);
             window.removeEventListener("touchmove", onTouch);
             cancelAnimationFrame(animationFrameId);
             clearTimeout(inactivityTimer);
+            if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current);
         };
 
     }, []); // Run once on mount
@@ -378,17 +418,37 @@ const LiquidHero = () => {
                         </g>
                     </mask>
                     <mask id="wireframeMask">
-                        <rect class="wireframe-wipe" x="0" y="-15%" width="100%" height="15%" fill="white" />
+                        <rect className="wireframe-wipe" x="0" y="-15%" width="100%" height="15%" fill="white" />
                     </mask>
                 </defs>
 
                 <image id="baseImg" href={diffuseImg} opacity="1" ref={baseImgRef} />
 
-                <g mask="url(#revealMask)">
+                {/* Wireframe - Moved BEFORE Reveal to be behind it (z-index) */}
+                <image
+                    id="wireframeImg"
+                    href={wireframeImg}
+                    // Use style for smooth CSS transition of opacity
+                    style={{
+                        opacity: disableAnimations ? 0 : 0.3,
+                        transition: 'opacity 0.8s ease-out'
+                    }}
+                    mask="url(#wireframeMask)"
+                    ref={wireframeImgRef}
+                />
+
+                {/* Mask Group - Hide completely if disabled (user wants no helmet seen) */}
+                <g
+                    // Always keep the mask to prevent flashing the full image before fade out
+                    mask="url(#revealMask)"
+                    style={{
+                        opacity: disableAnimations ? 0 : 1,
+                        transition: 'opacity 0.8s ease-out'
+                    }}
+                >
                     <rect x="0" y="0" width="100%" height="100%" fill="#e9eae4" opacity="0.35" />
                     <image id="revealImg" href={cascoImg} opacity="1" ref={revealImgRef} />
                 </g>
-                <image id="wireframeImg" href={wireframeImg} opacity="0.3" mask="url(#wireframeMask)" ref={wireframeImgRef} />
             </svg>
         </div >
     );

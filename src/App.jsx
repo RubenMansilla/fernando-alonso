@@ -1,6 +1,6 @@
 import Header from './components/Header/Header'
 import AnimatedBackground from './components/AnimatedBackground/AnimatedBackground'
-import LiquidHero from './components/LiquidHero/LiquidHero'
+import Home from './pages/Home'
 import './App.css'
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
     <>
       <Header />
       <AnimatedBackground />
-      <LiquidHero />
+      <Home />
     </>
   )
 }

@@ -1,0 +1,10 @@
+.home-container {
+    position: relative;
+    width: 100%;
+    /* Ensure enough height for scroll */
+}
+
+/* 
+   We ensure content section has a background to cover things if needed, 
+   but for this effect, the hero is sitting on top or behind. 
+*/

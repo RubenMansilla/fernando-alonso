@@ -1,0 +1,15 @@
+.content-section {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #9a6e6e;
+    /* Light background to contrast with dark hero */
+    color: #1a1a1a;
+}
+
+.content-section h2 {
+    font-size: 3rem;
+    text-transform: uppercase;
+}
