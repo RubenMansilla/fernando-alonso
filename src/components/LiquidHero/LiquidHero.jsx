@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './LiquidHero.css';
 import diffuseImg from '../../assets/diffuse.png';
-import cascoImg from '../../assets/casco.png';
+import cascoImg from '../../assets/casco.webp';
 
 const LiquidHero = () => {
     const containerRef = useRef(null);
