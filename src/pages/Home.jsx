@@ -24,6 +24,7 @@ const Home = () => {
                 end: "+=200%",
                 scrub: 1,
                 pin: true,
+                invalidateOnRefresh: true, // Force recalculation on resize
                 onUpdate: (self) => {
                     if (heroLogicRef.current) {
                         // Keep animations active until almost fully scrolled (0.9)
@@ -41,12 +42,15 @@ const Home = () => {
                 // Target: 35% of screen width
                 // Height: 16:9 ratio of that width
                 // We use standard units to let CSS handle it if possible, but force aspect ratio via vw 
-
-                tl.to(heroAnimRef.current, {
-                    width: "32vw",
-                    height: "20vw", // Strictly 16:9 of 30vw
-                    ease: "power2.inOut",
-                });
+                // FIXED: Explicit start/end states to prevent jumps. Linear ease for direct control.
+                tl.fromTo(heroAnimRef.current,
+                    { width: "100vw", height: "100vh" },
+                    {
+                        width: "32vw",
+                        height: "18vw", // Strictly 16:9 of 32vw
+                        ease: "none",
+                    }
+                );
 
                 // Zoom effect: Scale UP the inner content
                 tl.to(".hero-card-inner", {
@@ -87,11 +91,15 @@ const Home = () => {
             mm.add("(max-width: 799px)", () => {
                 const tl = gsap.timeline({ scrollTrigger: scrollConfig });
 
-                tl.to(heroAnimRef.current, {
-                    width: "80vw",
-                    height: "45vw", // Strictly 16:9 of 80vw
-                    ease: "power2.inOut",
-                });
+                // FIXED: Explicit start/end for mobile too
+                tl.fromTo(heroAnimRef.current,
+                    { width: "100vw", height: "100vh" },
+                    {
+                        width: "80vw",
+                        height: "45vw", // Strictly 16:9 of 80vw
+                        ease: "none",
+                    }
+                );
 
 
                 // Header Color Transition (Mobile)
