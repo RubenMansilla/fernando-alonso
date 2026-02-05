@@ -8,7 +8,7 @@ const ContentSection = () => {
     useEffect(() => {
         const updateDurations = () => {
             // Define desired speed in pixels per second
-            const SPEED_PX_PER_SEC = 200; // Adjust this number to change global speed
+            const SPEED_PX_PER_SEC = 100; // Adjust this number to change global speed
 
             [trackLeftRef, trackRightRef].forEach(ref => {
                 const el = ref.current;

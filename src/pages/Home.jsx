@@ -43,8 +43,8 @@ const Home = () => {
                 // We use standard units to let CSS handle it if possible, but force aspect ratio via vw 
 
                 tl.to(heroAnimRef.current, {
-                    width: "35vw",
-                    height: "19.6875vw", // Strictly 16:9 of 35vw
+                    width: "32vw",
+                    height: "20vw", // Strictly 16:9 of 30vw
                     ease: "power2.inOut",
                 });
 
@@ -77,8 +77,8 @@ const Home = () => {
                 const tl = gsap.timeline({ scrollTrigger: scrollConfig });
 
                 tl.to(heroAnimRef.current, {
-                    width: "90vw",
-                    height: "50.625vw", // Strictly 16:9 of 90vw (90 * 9 / 16)
+                    width: "80vw",
+                    height: "45vw", // Strictly 16:9 of 80vw
                     ease: "power2.inOut",
                 });
 
