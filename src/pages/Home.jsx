@@ -28,7 +28,7 @@ const Home = () => {
                     if (heroLogicRef.current) {
                         // Keep animations active until almost fully scrolled (0.9)
                         // This allows the user to play with the reveal while the card shrinks
-                        const shouldDisable = self.progress > 0.5;
+                        const shouldDisable = self.progress > 0.45;
                         heroLogicRef.current.setScrolling(shouldDisable);
                     }
                 }
@@ -48,13 +48,25 @@ const Home = () => {
                     ease: "power2.inOut",
                 });
 
-                // Zoom effect: Scale UP the inner content as the container shrinks
-                // This keeps the face focused and larger
+                // Zoom effect: Scale UP the inner content
                 tl.to(".hero-card-inner", {
                     scale: 1.5,
-                    opacity: 1, // Ensure it stays visible
+                    opacity: 1,
                     ease: "power2.inOut"
-                }, "<"); // "<" syncs start time with the previous animation
+                }, "<");
+
+                // Tint Overlay: Darken the WHOLE card (including face) with #494d40
+                tl.to(".hero-overlay", {
+                    opacity: 1, // Full opacity for multiply blend mode
+                    ease: "power2.inOut"
+                }, "<");
+
+                // Hide the animated blobs/lines so they don't show through the tint
+                tl.to(".animated-bg svg", {
+                    opacity: 0,
+                    ease: "power2.inOut"
+                }, "<");
+
             });
 
             // 2. Mobile/Tablet Portrait (Vertical Screens)
@@ -72,9 +84,22 @@ const Home = () => {
 
                 // Zoom effect for mobile
                 tl.to(".hero-card-inner", {
-                    scale: 1.3, // Slightly less zoom on mobile to keep context
+                    scale: 1.3,
                     ease: "power2.inOut"
                 }, "<");
+
+                // Tint Overlay for mobile
+                tl.to(".hero-overlay", {
+                    opacity: 1,
+                    ease: "power2.inOut"
+                }, "<");
+
+                // Hide blobs on mobile too
+                tl.to(".animated-bg svg", {
+                    opacity: 0,
+                    ease: "power2.inOut"
+                }, "<");
+
             });
 
         }, mainRef);

@@ -17,6 +17,7 @@ const HeroCard = forwardRef((props, ref) => {
             <div className="hero-card-inner">
                 <AnimatedBackground />
                 <LiquidHero disableAnimations={disableAnimations} />
+                <div className="hero-overlay"></div>
             </div>
         </div>
     );
