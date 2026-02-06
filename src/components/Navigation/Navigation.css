@@ -163,26 +163,23 @@
     justify-items: center;
     align-items: center;
     transform: translateY(-6vh);
-    --mouse-y: 0;
     --move-force: 90px;
+    --rotate-force: 8deg;
+    /* Rotation intensity */
 }
 
-/* Items de la columna IZQUIERDA (1 y 3) */
-/* Lógica: Ratón arriba (negativo) -> Queremos bajar (positivo). Multiplicamos por -1 */
 .grid-item:nth-child(odd) {
-    /* calc: -1 * (valos del ratón) * (fuerza máxima) */
-    transform: translateY(calc(var(--mouse-y) * -1 * var(--move-force)));
-    transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    /* Suavizado ligero */
+    transform:
+        translateY(calc(var(--mouse-y) * -1 * var(--move-force))) rotate(calc(var(--velocity, 0) * -1 * var(--rotate-force)));
+    will-change: transform;
+    transition: filter 0.5s ease, box-shadow 0.3s ease;
 }
 
-/* Items de la columna DERECHA (2 y 4) */
-/* Lógica: Ratón arriba (negativo) -> Queremos subir (negativo). Multiplicamos directo */
 .grid-item:nth-child(even) {
-    /* calc: (valor del ratón) * (fuerza máxima) */
-    transform: translateY(calc(var(--mouse-y) * var(--move-force)));
-    transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    /* Suavizado ligero */
+    transform:
+        translateY(calc(var(--mouse-y) * var(--move-force))) rotate(calc(var(--velocity, 0) * var(--rotate-force)));
+    will-change: transform;
+    transition: filter 0.5s ease, box-shadow 0.3s ease;
 }
 
 .grid-item {
@@ -191,7 +188,7 @@
     width: 100%;
     max-width: 330px;
     height: 363px;
-    border: 1px solid black;
+    transition: filter 0.5s ease;
 }
 
 .grid-item img {
@@ -199,6 +196,11 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: grayscale(100%) brightness(0.8);
+    filter: sepia(100%) hue-rotate(190deg) saturate(0.8) brightness(0.7) contrast(1.2);
     transition: all 0.5s ease;
+}
+
+/* Remove filter from specific item as requested */
+.item-1 img {
+    filter: none;
 }

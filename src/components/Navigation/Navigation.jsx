@@ -1,71 +1,91 @@
 import React, { useEffect, useRef } from 'react';
 import './Navigation.css';
-import casco from '../../assets/cascofer.png';
-import fernando from '../../assets/fernando.png';
-import background from '../../assets/background.png';
+import img1 from '../../assets/navbar/navbarImg1.jpg';
+import img2 from '../../assets/navbar/navbarImg2.webp';
+import img3 from '../../assets/navbar/navbarImg3.jpeg';
+import img4 from '../../assets/navbar/navbarImg4.avif';
+import img5 from '../../assets/navbar/navbarImg5.png';
+
+// Función de ayuda para la interpolación (suavizado matemático)
+const lerp = (start, end, factor) => {
+    return start + (end - start) * factor;
+};
 
 const Navigation = ({ isOpen, toggleMenu }) => {
+
     const gridRef = useRef(null);
 
-    useEffect(() => {
-        // Función interna para manejar el movimiento en toda la ventana
-        const handleWindowMouseMove = (e) => {
-            if (!gridRef.current) return;
+    // Usamos refs para guardar valores sin renderizar de nuevo
+    const targetY = useRef(0);  // Dónde está el ratón realmente
+    const currentY = useRef(0); // Dónde está la animación ahora mismo
+    const requestRef = useRef(null); // Para cancelar la animación
 
+    useEffect(() => {
+        const handleWindowMouseMove = (e) => {
             const { clientY } = e;
             const { innerHeight } = window;
+            // Calculamos el objetivo (-1 a 1)
+            targetY.current = ((clientY / innerHeight) - 0.5) * 2;
+        };
 
-            // Calcula valor entre -1 y 1
-            const yPos = ((clientY / innerHeight) - 0.5) * 2;
+        // Bucle de animación (60 veces por segundo)
+        const animate = () => {
+            if (gridRef.current) {
+                // AQUÍ ESTÁ LA MAGIA:
+                // Bajamos el factor a 0.04 para un movimiento más pesado y suave
+                const previousY = currentY.current;
+                currentY.current = lerp(currentY.current, targetY.current, 0.04);
 
-            gridRef.current.style.setProperty('--mouse-y', yPos);
+                // Calculamos la "velocidad" para añadir una ligera rotación
+                const velocity = currentY.current - previousY;
+
+                // Aplicamos los valores suavizados al CSS
+                gridRef.current.style.setProperty('--mouse-y', currentY.current);
+                gridRef.current.style.setProperty('--velocity', velocity);
+            }
+            requestRef.current = requestAnimationFrame(animate);
         };
 
         if (isOpen) {
-            // 1. Bloquear scroll
             document.body.style.overflow = 'hidden';
-
-            // 2. Escuchar movimiento en TODA la ventana (incluido el header)
             window.addEventListener('mousemove', handleWindowMouseMove);
+            // Iniciamos el bucle
+            requestRef.current = requestAnimationFrame(animate);
         } else {
             document.body.style.overflow = '';
-            // Aseguramos limpieza si se cierra
             window.removeEventListener('mousemove', handleWindowMouseMove);
+            cancelAnimationFrame(requestRef.current);
         }
 
-        // Cleanup al desmontar o cambiar isOpen
         return () => {
             document.body.style.overflow = '';
             window.removeEventListener('mousemove', handleWindowMouseMove);
+            cancelAnimationFrame(requestRef.current);
         };
     }, [isOpen]);
 
     return (
         <>
-            {/* Sliding Overlay - YA NO necesita onMouseMove aquí */}
             <div className={`navigation-overlay ${isOpen ? 'open' : ''}`}>
                 <div className="nav-column left">
                     <div className="nav-image-grid" ref={gridRef}>
                         <div className="grid-item item-1">
-                            <img src={background} alt="Helmet" />
+                            <img src={img4} alt="Helmet" />
                         </div>
                         <div className="grid-item item-2">
-                            <img src={background} alt="Fernando" />
+                            <img src={img5} alt="Fernando" />
                         </div>
                         <div className="grid-item item-3">
-                            <img src={background} alt="Profile" style={{ transform: 'scaleX(-1)' }} />
+                            <img src={img4} alt="Profile" style={{ transform: 'scaleX(-1)' }} />
                         </div>
                         <div className="grid-item item-4">
-                            <img src={background} alt="Track" />
+                            <img src={img2} alt="Track" />
                         </div>
                     </div>
                 </div>
-                <div className="nav-column right">
-                    {/* Right content (40%) */}
-                </div>
+                <div className="nav-column right"></div>
             </div>
 
-            {/* Static Header Elements */}
             <div className={`navigation-header ${isOpen ? 'open' : ''}`}>
                 <div className="brand-logo">
                     <span className="fname">Fernando</span>
