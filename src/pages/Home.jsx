@@ -61,7 +61,7 @@ const Home = () => {
 
                 // Tint Overlay: Darken the WHOLE card (including face) with #494d40
                 tl.to(".hero-overlay", {
-                    opacity: 1, // Full opacity for multiply blend mode
+                    opacity: 0.8,
                     ease: "power2.inOut"
                 }, "<");
 
@@ -73,13 +73,13 @@ const Home = () => {
 
                 // Change background color of animated-bg
                 tl.to(".hero-card-inner .animated-bg", {
-                    backgroundColor: "#494d40",
+                    backgroundColor: "#0058bdff", // Muted slate blue
                     ease: "power2.inOut"
                 }, "<");
 
                 // Reduce baseImg opacity (but keep visible)
                 tl.to("#baseImg", {
-                    opacity: 0.4,
+                    opacity: 0.5,
                     ease: "power2.inOut"
                 }, "<");
 
@@ -146,7 +146,7 @@ const Home = () => {
 
                 // Tint Overlay for mobile
                 tl.to(".hero-overlay", {
-                    opacity: 1,
+                    opacity: 0.8,
                     ease: "power2.inOut"
                 }, "<");
 
@@ -158,7 +158,7 @@ const Home = () => {
 
                 // Change background color of animated-bg
                 tl.to(".hero-card-inner .animated-bg", {
-                    backgroundColor: "#494d40",
+                    backgroundColor: "#365063", // Muted slate blue
                     ease: "power2.inOut"
                 }, "<");
 

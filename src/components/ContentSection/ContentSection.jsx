@@ -39,41 +39,38 @@ const ContentSection = () => {
     return (
         <section className="content-section">
             <AnimatedBackground
-                backgroundColor="#282c20"
+                backgroundColor="#0e2640"
                 containerPosition="absolute"
-                // Filter for "Deep Dark Green" (Verde Oscuro).
-                // 1. sepia(1) -> Base.
-                // 2. hue-rotate(85deg) -> More Green (less yellow).
-                // 3. brightness(0.2) -> Very Dark.
-                // 4. saturate(1.5) -> Vivid enough to be seen as green.
-                videoFilter="sepia(1) hue-rotate(85deg) saturate(1.5) brightness(0.2) contrast(1.1)"
+                // Filter for "Deep Blue" matching helmet
+                // hue-rotate(190deg) shifts sepia (yellow-ish) to blue
+                videoFilter="sepia(1) hue-rotate(190deg) saturate(2) brightness(0.2) contrast(1.1)"
                 videoMixBlendMode="screen" // Light on dark
                 videoOpacity={1.0} // Max visibility
-                zIndex={0} // Place behind text (z-index of text is auto/0, but text comes later in DOM so should be fine. Or use -1 with isolation)
+                zIndex={0}
             />
             <div className="text-row row-left">
                 {/* Remove inline style class for duration, handle via JS */}
                 <div className="marquee-track left" ref={trackLeftRef}>
-                    <span>WE DID IT AT HOME</span>
-                    <span>WE DID IT AT HOME</span>
-                    <span>WE DID IT AT HOME</span>
-                    <span>WE DID IT AT HOME</span>
-                    <span>WE DID IT AT HOME</span>
-                    <span>WE DID IT AT HOME</span>
-                    <span>WE DID IT AT HOME</span>
-                    <span>WE DID IT AT HOME</span>
+                    <span>NO HAY VICTORIAS SIN SACRIFICIO</span>
+                    <span>NO HAY VICTORIAS SIN SACRIFICIO</span>
+                    <span>NO HAY VICTORIAS SIN SACRIFICIO</span>
+                    <span>NO HAY VICTORIAS SIN SACRIFICIO</span>
+                    <span>NO HAY VICTORIAS SIN SACRIFICIO</span>
+                    <span>NO HAY VICTORIAS SIN SACRIFICIO</span>
+                    <span>NO HAY VICTORIAS SIN SACRIFICIO</span>
+                    <span>NO HAY VICTORIAS SIN SACRIFICIO</span>
                 </div>
             </div>
             <div className="text-row row-right">
                 <div className="marquee-track right" ref={trackRightRef}>
-                    <span>I WILL REMEMBER FOREVER A BRITISH GP WEEKEND</span>
-                    <span>I WILL REMEMBER FOREVER A BRITISH GP WEEKEND</span>
-                    <span>I WILL REMEMBER FOREVER A BRITISH GP WEEKEND</span>
-                    <span>I WILL REMEMBER FOREVER A BRITISH GP WEEKEND</span>
-                    <span>I WILL REMEMBER FOREVER A BRITISH GP WEEKEND</span>
-                    <span>I WILL REMEMBER FOREVER A BRITISH GP WEEKEND</span>
-                    <span>I WILL REMEMBER FOREVER A BRITISH GP WEEKEND</span>
-                    <span>I WILL REMEMBER FOREVER A BRITISH GP WEEKEND</span>
+                    <span>LA DISCIPLINA CONSTRUYE CAMPEONES</span>
+                    <span>LA DISCIPLINA CONSTRUYE CAMPEONES</span>
+                    <span>LA DISCIPLINA CONSTRUYE CAMPEONES</span>
+                    <span>LA DISCIPLINA CONSTRUYE CAMPEONES</span>
+                    <span>LA DISCIPLINA CONSTRUYE CAMPEONES</span>
+                    <span>LA DISCIPLINA CONSTRUYE CAMPEONES</span>
+                    <span>LA DISCIPLINA CONSTRUYE CAMPEONES</span>
+                    <span>LA DISCIPLINA CONSTRUYE CAMPEONES</span>
                 </div>
             </div>
         </section>

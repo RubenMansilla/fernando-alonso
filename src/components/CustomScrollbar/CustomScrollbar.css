@@ -5,7 +5,7 @@
     right: 0px;
     /* Slight offset from edge */
     width: 6px;
-    height: calc(100vh - 96px);
+    height: calc(100vh - 70px);
     /* Remaining height */
     background: transparent;
     z-index: 9999;

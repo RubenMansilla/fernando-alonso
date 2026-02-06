@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './LiquidHero.css';
-import diffuseImg from '../../assets/diffuse.png';
-import cascoImg from '../../assets/casco.webp';
+import diffuseImg from '../../assets/fernando.png';
+import cascoImg from '../../assets/cascofer.png';
 import wireframeImg from '../../assets/cascovacio.png';
 
 const LiquidHero = ({ disableAnimations }) => {
@@ -28,8 +28,8 @@ const LiquidHero = ({ disableAnimations }) => {
         if (!container || !svg || !baseImg || !revealImg || !wireframeImg || !maskPath) return;
 
         // ====== CONFIGURACIÓN DE GOTA ======
-        const TRAIL_COUNT = 26;
-        const BASE_R = 120;
+        const TRAIL_COUNT = 20;
+        const BASE_R = 90;
         const LERP_HEAD = 0.6;
         const LERP_TAIL = 0.4;
         // ===================================
@@ -80,7 +80,7 @@ const LiquidHero = ({ disableAnimations }) => {
             svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
 
             const baseH = H * 0.92;
-            const REVEAL_SCALE = 1.4;
+            const REVEAL_SCALE = 1.42;
             const revealH = baseH * REVEAL_SCALE;
 
             function ensureRatio(imgEl, src, cb) {
@@ -107,7 +107,7 @@ const LiquidHero = ({ disableAnimations }) => {
 
                     const revealW = revealH * rReveal;
                     const revealX = (W - revealW) / 2;
-                    const REVEAL_Y_OFFSET = H * 0.2;
+                    const REVEAL_Y_OFFSET = H * 0.21;
                     const revealY = (H - revealH) + REVEAL_Y_OFFSET;
 
                     revealImg.setAttribute("x", revealX);
@@ -116,11 +116,17 @@ const LiquidHero = ({ disableAnimations }) => {
                     revealImg.setAttribute("height", revealH);
                     revealImg.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
-                    // Wireframe logic (identical position to revealImg)
-                    wireframeImg.setAttribute("x", revealX);
-                    wireframeImg.setAttribute("y", revealY);
-                    wireframeImg.setAttribute("width", revealW);
-                    wireframeImg.setAttribute("height", revealH);
+                    // Wireframe scale adjustment (slightly smaller to match visual size)
+                    const wireScale = 0.968;
+                    const wireW = revealW * wireScale;
+                    const wireH = revealH * wireScale;
+                    const wireX = revealX + (revealW - wireW) / 2;
+                    const wireY = revealY + (revealH - wireH) / 2;
+
+                    wireframeImg.setAttribute("x", wireX);
+                    wireframeImg.setAttribute("y", wireY);
+                    wireframeImg.setAttribute("width", wireW);
+                    wireframeImg.setAttribute("height", wireH);
                     wireframeImg.setAttribute("preserveAspectRatio", "xMidYMid meet");
                 });
             });

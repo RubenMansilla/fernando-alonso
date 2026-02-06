@@ -1,0 +1,67 @@
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 10010;
+    background-color: transparent;
+    pointer-events: auto;
+}
+
+.loading-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.bg-rect {
+    fill: #2b8cc9;
+}
+
+.mask-text {
+    font-family: 'Fredoka', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    /* en unidades del viewBox */
+    fill: black;
+    /* Start centered */
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.loading-screen.hidden {
+    pointer-events: none;
+}
+
+.loading-text {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+    color: #282c20;
+    display: flex;
+    font-family: 'Mona Sans Variable', sans-serif;
+    font-size: 14px;
+    justify-content: center;
+    line-height: 20px;
+    padding: 0px 14.2222px;
+    text-transform: uppercase;
+    font-weight: 700;
+    z-index: 10000;
+    /* Above SVG */
+}
+
+/* Logo centered style */
+.logo-centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #282c20;
+    z-index: 10001;
+}

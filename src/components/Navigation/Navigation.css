@@ -1,0 +1,204 @@
+.navigation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 110vh;
+    background-color: #0e2640;
+    z-index: 10001;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    opacity: 1;
+    transform: translateY(-100%);
+    border-radius: 0 0 100% 100% / 0 0 8% 8%;
+    transition:
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        height 0s step-start 0s,
+        border-radius 0s step-start 0s;
+    overflow: hidden;
+}
+
+.navigation-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../assets/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease 0s;
+    pointer-events: none;
+}
+
+.navigation-overlay.open {
+    transform: translateY(0);
+    height: 100vh;
+    border-radius: 0;
+    pointer-events: auto;
+    transition:
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        height 0s step-end 0.8s,
+        border-radius 0s step-end 0.8s;
+}
+
+.navigation-overlay.open::before {
+    opacity: 1;
+    transition: opacity 1.0s ease 0.5s;
+}
+
+.navigation-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+    box-sizing: border-box;
+    z-index: 10002;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.navigation-header.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.navigation-header .brand-logo {
+    color: #FFFFFF;
+}
+
+.navigation-header .btn-menu {
+    border-color: #1a1a1a;
+    background-color: #f4f4ed;
+    border: 2px solid #f4f4ed;
+}
+
+.navigation-header .bar {
+    background-color: #1a1a1a;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.nav-item {
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.nav-link {
+    font-family: 'Fredoka', sans-serif;
+    /* Matching font */
+    font-size: 4rem;
+    font-weight: 700;
+    color: #e9eae4;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: block;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navigation-overlay.open .nav-link {
+    transform: translateY(0);
+}
+
+.navigation-overlay.open .nav-item:nth-child(1) .nav-link {
+    transition-delay: 0.1s;
+}
+
+.navigation-overlay.open .nav-item:nth-child(2) .nav-link {
+    transition-delay: 0.2s;
+}
+
+.navigation-overlay.open .nav-item:nth-child(3) .nav-link {
+    transition-delay: 0.3s;
+}
+
+.navigation-overlay.open .nav-item:nth-child(4) .nav-link {
+    transition-delay: 0.4s;
+}
+
+.nav-link:hover {
+    color: #FFF200;
+}
+
+.nav-column {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.nav-column.left {
+    width: 52%;
+}
+
+.nav-column.right {
+    width: 48%;
+}
+
+.nav-image-grid {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-template-rows: max-content max-content;
+    gap: 54px;
+    height: 100%;
+    padding: 0px 0px 0px 48px;
+    box-sizing: border-box;
+    justify-items: center;
+    align-items: center;
+    transform: translateY(-6vh);
+    --mouse-y: 0;
+    --move-force: 90px;
+}
+
+/* Items de la columna IZQUIERDA (1 y 3) */
+/* Lógica: Ratón arriba (negativo) -> Queremos bajar (positivo). Multiplicamos por -1 */
+.grid-item:nth-child(odd) {
+    /* calc: -1 * (valos del ratón) * (fuerza máxima) */
+    transform: translateY(calc(var(--mouse-y) * -1 * var(--move-force)));
+    transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Suavizado ligero */
+}
+
+/* Items de la columna DERECHA (2 y 4) */
+/* Lógica: Ratón arriba (negativo) -> Queremos subir (negativo). Multiplicamos directo */
+.grid-item:nth-child(even) {
+    /* calc: (valor del ratón) * (fuerza máxima) */
+    transform: translateY(calc(var(--mouse-y) * var(--move-force)));
+    transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Suavizado ligero */
+}
+
+.grid-item {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 330px;
+    height: 363px;
+    border: 1px solid black;
+}
+
+.grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(100%) brightness(0.8);
+    transition: all 0.5s ease;
+}
