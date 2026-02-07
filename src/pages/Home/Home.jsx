@@ -104,59 +104,91 @@ const Home = () => {
                 );
             });
 
-            // 2. Mobile/Tablet Portrait (Vertical Screens)
-            // Goal: A horizontal card in a vertical screen.
-            // Width: 90% of screen (almost full width)
-            // Height: 16:9 ratio of THAT width (creates a horizontal bar)
-            mm.add("(max-width: 799px)", () => {
+            // 2. Tablet Portrait (500px - 799px)
+            mm.add("(min-width: 500px) and (max-width: 799px)", () => {
                 const tl = gsap.timeline({ scrollTrigger: scrollConfig });
 
-                // FIXED: Explicit start/end for mobile too
                 tl.fromTo(heroAnimRef.current,
                     { width: "100vw", height: "100vh" },
                     {
-                        width: "80vw",
-                        height: "55vw", // Strictly 16:9 of 80vw
+                        width: "50vw",
+                        height: "30vw",
                         ease: "none",
                     }
                 );
 
-
-                // Header Color Transition (Mobile)
-
-
-                // Scrollbar Color Transition (Mobile)
                 tl.fromTo(document.body,
                     { "--sb-thumb-color": "#414142" },
                     { "--sb-thumb-color": "#8f8f91", duration: 0.15, ease: "none" },
                     0
                 );
 
-                // Zoom effect for mobile
                 tl.to(".hero-card-inner", {
                     scale: 1.3,
                     ease: "power2.inOut"
                 }, "<");
 
-                // Tint Overlay for mobile
                 tl.to(".hero-overlay", {
                     opacity: 0.8,
                     ease: "power2.inOut"
                 }, "<");
 
-                // Hide blobs (videos) on mobile too
                 tl.to(".hero-card-inner .bg-video-wrapper", {
                     opacity: 0,
                     ease: "power2.inOut"
                 }, "<");
 
-                // Change background color of animated-bg
                 tl.to(".hero-card-inner .animated-bg", {
-                    backgroundColor: "#365063", // Muted slate blue
+                    backgroundColor: "#365063",
                     ease: "power2.inOut"
                 }, "<");
 
-                // Reduce baseImg opacity (Mobile)
+                tl.to("#baseImg", {
+                    opacity: 0.3,
+                    ease: "power2.inOut"
+                }, "<");
+
+            });
+
+            // 3. Mobile (menos de 500px) - HeroCard más grande
+            mm.add("(max-width: 499px)", () => {
+                const tl = gsap.timeline({ scrollTrigger: scrollConfig });
+
+                tl.fromTo(heroAnimRef.current,
+                    { width: "100vw", height: "100vh" },
+                    {
+                        width: "75vw",
+                        height: "90vw", // Más grande en móvil
+                        ease: "none",
+                    }
+                );
+
+                tl.fromTo(document.body,
+                    { "--sb-thumb-color": "#414142" },
+                    { "--sb-thumb-color": "#8f8f91", duration: 0.15, ease: "none" },
+                    0
+                );
+
+                tl.to(".hero-card-inner", {
+                    scale: 1.3,
+                    ease: "power2.inOut"
+                }, "<");
+
+                tl.to(".hero-overlay", {
+                    opacity: 0.8,
+                    ease: "power2.inOut"
+                }, "<");
+
+                tl.to(".hero-card-inner .bg-video-wrapper", {
+                    opacity: 0,
+                    ease: "power2.inOut"
+                }, "<");
+
+                tl.to(".hero-card-inner .animated-bg", {
+                    backgroundColor: "#365063",
+                    ease: "power2.inOut"
+                }, "<");
+
                 tl.to("#baseImg", {
                     opacity: 0.3,
                     ease: "power2.inOut"

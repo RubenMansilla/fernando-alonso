@@ -92,11 +92,24 @@
 @media screen and (max-width: 1024px) {
     .content-section {
         justify-content: flex-end;
-        padding-bottom: 25vh;
+        padding-bottom: 10vh;
     }
 
     .text-row {
-        font-size: 8vw;
+        font-size: 9vw;
+        /* Slightly larger on mobile for readability/impact if needed, or keep same */
+    }
+}
+
+/*movil*/
+@media screen and (max-width: 480px) {
+    .content-section {
+        justify-content: flex-end;
+        padding-bottom: 10vh;
+    }
+
+    .text-row {
+        font-size: 12vw;
         /* Slightly larger on mobile for readability/impact if needed, or keep same */
     }
 }
