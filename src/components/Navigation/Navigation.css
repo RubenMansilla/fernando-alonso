@@ -1,4 +1,7 @@
-.navigation-overlay {
+/* =========================
+   LAYER 1: Background Panel
+   ========================= */
+.navigation-bg {
     position: fixed;
     top: 0;
     left: 0;
@@ -6,27 +9,24 @@
     height: 110vh;
     background-color: #0e2640;
     z-index: 10001;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-    opacity: 1;
     transform: translateY(-100%);
     border-radius: 0 0 100% 100% / 0 0 8% 8%;
-    transition:
-        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-        height 0s step-start 0s,
-        border-radius 0s step-start 0s;
     overflow: hidden;
+    pointer-events: none;
+    /* CLOSING: waits 0.2s (after fade starts), then slides up in 1.2s */
+    transition:
+        transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s,
+        height 0s step-start 0.2s,
+        border-radius 0s step-start 0.2s;
 }
 
-.navigation-overlay::before {
+.navigation-bg::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 110vh;
     background-image: url('../../assets/background.png');
     background-size: cover;
     background-position: center;
@@ -37,20 +37,44 @@
     pointer-events: none;
 }
 
-.navigation-overlay.open {
+.navigation-bg.open {
     transform: translateY(0);
     height: 100vh;
     border-radius: 0;
     pointer-events: auto;
+    /* OPENING: 1s, no delay */
     transition:
-        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-        height 0s step-end 0.8s,
-        border-radius 0s step-end 0.8s;
+        transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+        height 0s step-end 1s,
+        border-radius 0s step-end 1s;
 }
 
-.navigation-overlay.open::before {
+.navigation-bg.open::before {
     opacity: 1;
-    transition: opacity 1.0s ease 0.5s;
+    transition: opacity 1.0s ease 0.3s;
+}
+
+/* =========================
+   LAYER 2: Content Layer
+   ========================= */
+.navigation-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10002;
+    /* Above background */
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    /* Always visible - clip-path on images handles show/hide */
+    pointer-events: none;
+}
+
+.navigation-content.open {
+    pointer-events: auto;
 }
 
 .navigation-header {
@@ -88,53 +112,185 @@
     background-color: #1a1a1a;
 }
 
-.nav-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+/* =========================
+   RIGHT COLUMN CONTENT
+   ========================= */
+
+.nav-column.right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    /* Center horizontally like reference */
+    padding: 8vh 4vw 4vh 4vw;
     text-align: center;
+    color: #e4e5df;
+    /* Off-white */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
 
-.nav-item {
-    margin: 20px 0;
-    overflow: hidden;
+.navigation-content.open .nav-column.right {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.5s ease 0.3s;
+    /* Delay to let bg open first */
+}
+
+/* MENU LINKS */
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Ensure links hug text width so SVG matches */
+    gap: 1vh;
+    margin-top: 12vh;
 }
 
 .nav-link {
-    font-family: 'Fredoka', sans-serif;
-    /* Matching font */
-    font-size: 4rem;
+    font-family: 'Mona Sans Variable', sans-serif;
+    /* User requested font */
+    font-size: 73px;
+    font-weight: 600;
+    line-height: 0.9;
+    color: #b7b8b1;
+    /* Dimmer default */
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    position: relative;
+}
+
+/* Rolling Animation Wrapper */
+.nav-text-wrapper {
+    display: block;
+    height: 0.9em;
+    /* Matches line-height */
+    overflow: hidden;
+    position: relative;
+    /* Start with only front text visible */
+}
+
+.nav-text,
+.nav-text-clone {
+    display: block;
+    /* absolute positioning to overlap them exactly */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.nav-text {
+    position: relative;
+    /* Keep one relative to give height */
+}
+
+.nav-text-clone {
+    transform: translateY(100%);
+    /* Start below */
+}
+
+/* Individual Character Animation */
+.char {
+    display: inline-block;
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Color handled on parent link */
+}
+
+/* Hover: Move both sets of chars up */
+.nav-link:not(.active):hover .nav-text .char {
+    transform: translateY(-100%);
+}
+
+.nav-link:not(.active):hover .nav-text-clone .char {
+    transform: translateY(-100%);
+}
+
+/* Squiggle Line for Active/Home */
+.nav-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    /* Slightly wider to match design */
+    height: auto;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    opacity: 0;
+    color: #d2ff00;
+    /* Neon Lime Green from reference */
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.nav-link.active .nav-line {
+    opacity: 1;
+}
+
+/* CENTER FOOTER (Logo/Tagline) */
+.nav-footer-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    margin-bottom: 10vh;
+}
+
+.laurel-icon img {
+    width: 80px;
+    height: auto;
+}
+
+
+.footer-tagline {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #8c8d85;
+    text-transform: uppercase;
+}
+
+/* BOTTOM FOOTER (Links) */
+.nav-footer-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.business-link {
+    font-size: 0.8rem;
     font-weight: 700;
     color: #e9eae4;
     text-decoration: none;
     text-transform: uppercase;
-    display: block;
-    transform: translateY(100%);
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Mona Sans Variable', sans-serif;
 }
 
-.navigation-overlay.open .nav-link {
-    transform: translateY(0);
+.social-links {
+    display: flex;
+    gap: 2rem;
 }
 
-.navigation-overlay.open .nav-item:nth-child(1) .nav-link {
-    transition-delay: 0.1s;
+.social-links a {
+    font-size: 12px;
+    font-weight: 900;
+    color: #f4f4ed;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+    font-family: 'Mona Sans Variable', sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 18px;
+
 }
 
-.navigation-overlay.open .nav-item:nth-child(2) .nav-link {
-    transition-delay: 0.2s;
-}
-
-.navigation-overlay.open .nav-item:nth-child(3) .nav-link {
-    transition-delay: 0.3s;
-}
-
-.navigation-overlay.open .nav-item:nth-child(4) .nav-link {
-    transition-delay: 0.4s;
-}
-
-.nav-link:hover {
-    color: #FFF200;
+.social-links a:hover {
+    color: #fff;
 }
 
 .nav-column {
@@ -197,10 +353,79 @@
     object-fit: cover;
     display: block;
     filter: sepia(100%) hue-rotate(190deg) saturate(0.8) brightness(0.7) contrast(1.2);
-    transition: all 0.5s ease;
+    /* CLOSED STATE: hidden via opacity + clip-path at 0 */
+    clip-path: ellipse(150% 0% at 50% 0);
+    opacity: 0;
+    /* CLOSING: Quick fade out */
+    transition:
+        filter 0.5s ease,
+        opacity 0.3s ease,
+        clip-path 0s linear 0.3s;
+    /* Snap clip-path after fade */
 }
 
-/* Remove filter from specific item as requested */
+.navigation-content.open .grid-item img {
+    clip-path: ellipse(150% 220% at 50% 0);
+    opacity: 1;
+    /* OPENING: Curtain reveal animation (clip-path only) */
+    transition:
+        filter 0.5s ease,
+        opacity 0s linear,
+        /* Balanced ease-out: not too fast at start, smooth deceleration */
+        clip-path 1.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Staggered Delays for cascading reveal - OPENING */
+.navigation-content.open .grid-item.item-1 img {
+    transition-delay: 0s;
+    /* First to finish */
+}
+
+.navigation-content.open .grid-item.item-2 img {
+    transition-delay: 0.1s;
+    /* A bit after 1 */
+}
+
+.navigation-content.open .grid-item.item-3 img {
+    transition-delay: 0.2s;
+    /* A bit after 2 */
+}
+
+.navigation-content.open .grid-item.item-4 img {
+    transition-delay: 0.2s;
+    /* More delay, last to finish */
+}
+
+/* Remove filter from specific item */
 .item-1 img {
     filter: none;
+}
+
+/* Responsive adjustment < 990px */
+@media (max-width: 990px) {
+    .nav-column.left {
+        display: none;
+    }
+
+    .nav-column.right {
+        width: 100%;
+        align-items: center;
+        text-align: center;
+    }
+
+    /* Reduce font sizes for smaller screens */
+    .nav-link {
+        font-size: 50px;
+        /* Was 73px */
+    }
+
+    .business-link {
+        font-size: 0.7rem;
+        /* Was 0.8rem */
+    }
+
+    .social-links a {
+        font-size: 10px;
+        /* Was 12px */
+    }
 }
