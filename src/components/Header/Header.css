@@ -169,3 +169,57 @@ body:has(.navigation-overlay.open) .brand-logo {
 }
 
 /* Add specific class for open header color change if needed */
+
+/* Responsive Styles */
+.text-short {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .text-full {
+        display: none;
+    }
+
+    .text-short {
+        display: inline;
+    }
+
+    .brand-logo {
+        flex-direction: row;
+        gap: 0px;
+        /* Reduced gap since fonts match now */
+        align-items: baseline;
+    }
+
+    .fname .text-short {
+        font-family: 'Helvetica Neue', 'Arial', sans-serif;
+        font-weight: 800;
+        letter-spacing: -1px;
+        font-size: 32.5px;
+    }
+
+    .btn-menu {
+        width: 45px;
+        height: 45px;
+        border-radius: 8px;
+    }
+
+    /* Adjust bars for smaller button */
+    .bar {
+        width: 16px;
+    }
+
+    .bar.short {
+        width: 12px;
+    }
+
+    .btn-menu.open .bar:first-child {
+        width: 16px;
+        transform: rotate(45deg) translateY(0.5px);
+    }
+
+    .btn-menu.open .bar.short {
+        width: 16px;
+        transform: rotate(-45deg) translateY(-0.5px);
+    }
+}

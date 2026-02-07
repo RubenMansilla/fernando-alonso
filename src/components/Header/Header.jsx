@@ -14,8 +14,14 @@ const Header = () => {
             <Navigation isOpen={isOpen} toggleMenu={toggleMenu} />
             <header className="main-header">
                 <div className="brand-logo">
-                    <span className="fname">Fernando</span>
-                    <span className="lname">Alonso14</span>
+                    <span className="fname">
+                        <span className="text-full">Fernando</span>
+                        <span className="text-short">F</span>
+                    </span>
+                    <span className="lname">
+                        <span className="text-full">Alonso14</span>
+                        <span className="text-short">A14</span>
+                    </span>
                 </div>
                 <div className="header-actions">
                     <button className={`btn-menu ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>

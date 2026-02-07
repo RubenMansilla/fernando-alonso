@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import HeroCard from '../components/HeroCard/HeroCard';
-import ContentSection from '../components/ContentSection/ContentSection';
+import HeroCard from '../../components/HeroCard/HeroCard';
+import ContentSection from '../../components/ContentSection/ContentSection';
 import './Home.css';
 
 gsap.registerPlugin(ScrollTrigger);

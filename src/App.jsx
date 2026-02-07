@@ -3,7 +3,7 @@ import Header from './components/Header/Header'
 import LoadingScreen from './components/LoadingScreen/LoadingScreen'
 import AnimatedBackground from './components/AnimatedBackground/AnimatedBackground'
 import CustomScrollbar from './components/CustomScrollbar/CustomScrollbar'
-import Home from './pages/Home'
+import Home from './pages/Home/Home'
 import './App.css'
 
 function App() {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Navigation.css';
 import img1 from '../../assets/navbar/navbarImg1.jpg';
 import img2 from '../../assets/navbar/navbarImg2.webp';
@@ -43,6 +43,27 @@ const Navigation = ({ isOpen, toggleMenu }) => {
     const targetY = useRef(0);  // Dónde está el ratón realmente
     const currentY = useRef(0); // Dónde está la animación ahora mismo
     const requestRef = useRef(null); // Para cancelar la animación
+
+    const [activeLink, setActiveLink] = useState('home');
+    const [hoveredLink, setHoveredLink] = useState(null);
+
+    // Determine which image should be highlighted
+    const getHighlightClass = (linkName) => {
+        // If hovering, highlight the hovered one
+        if (hoveredLink) {
+            return hoveredLink === linkName ? 'highlight' : '';
+        }
+        // If not hovering, highlight the active one
+        return activeLink === linkName ? 'highlight' : '';
+    };
+
+    const handleLinkClick = (linkName, e) => {
+        // Prevent default only if we want to handle routing manually, 
+        // but for now we just update state. 
+        // e.preventDefault(); // Uncomment if using React Router or need to stop default
+        setActiveLink(linkName);
+        if (toggleMenu) toggleMenu(); // Optional: close menu on click
+    };
 
     useEffect(() => {
         const handleWindowMouseMove = (e) => {
@@ -105,16 +126,16 @@ const Navigation = ({ isOpen, toggleMenu }) => {
             <div className={`navigation-content ${isOpen ? 'open' : ''}`}>
                 <div className="nav-column left">
                     <div className="nav-image-grid" ref={gridRef}>
-                        <div className="grid-item item-1">
+                        <div className={`grid-item item-1 ${getHighlightClass('home')}`}>
                             <img src={img1} alt="Helmet" />
                         </div>
-                        <div className="grid-item item-2">
+                        <div className={`grid-item item-2 ${getHighlightClass('trayectoria')}`}>
                             <img src={img5} alt="Fernando" />
                         </div>
-                        <div className="grid-item item-3">
+                        <div className={`grid-item item-3 ${getHighlightClass('logros')}`}>
                             <img src={img4} alt="Profile" style={{ transform: 'scaleX(-1)' }} />
                         </div>
-                        <div className="grid-item item-4">
+                        <div className={`grid-item item-4 ${getHighlightClass('calendario')}`}>
                             <img src={img2} alt="Track" />
                         </div>
                     </div>
@@ -122,28 +143,48 @@ const Navigation = ({ isOpen, toggleMenu }) => {
                 <div className="nav-column right" >
                     {/* ... INSIDE RENDER ... */}
                     <div className={`nav-menu ${isOpen ? 'open' : ''}`}>
-                        <a href="#" className="nav-link active">
+                        <a href="#"
+                            className={`nav-link ${activeLink === 'home' ? 'active' : ''}`}
+                            onMouseEnter={() => setHoveredLink('home')}
+                            onMouseLeave={() => setHoveredLink(null)}
+                            onClick={(e) => handleLinkClick('home', e)}
+                        >
                             <RollingText text="HOME" />
                             <svg className="nav-line" width="100%" height="100%" viewBox="0 0 412 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" stroke-width="6" style={{ strokeDashoffset: '0px', strokeDasharray: '433.208' }}></path>
+                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" stroke-width="6" style={{ strokeDasharray: '433.208' }}></path>
                             </svg>
                         </a>
-                        <a href="#" className="nav-link">
+                        <a href="#"
+                            className={`nav-link ${activeLink === 'trayectoria' ? 'active' : ''}`}
+                            onMouseEnter={() => setHoveredLink('trayectoria')}
+                            onMouseLeave={() => setHoveredLink(null)}
+                            onClick={(e) => handleLinkClick('trayectoria', e)}
+                        >
                             <RollingText text="TRAYECTORIA" />
                             <svg className="nav-line" width="100%" height="100%" viewBox="0 0 412 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" stroke-width="2.28" style={{ strokeDashoffset: '0px', strokeDasharray: '433.208' }}></path>
+                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" stroke-width="2.28" style={{ strokeDasharray: '433.208' }}></path>
                             </svg>
                         </a>
-                        <a href="#" className="nav-link">
+                        <a href="#"
+                            className={`nav-link ${activeLink === 'logros' ? 'active' : ''}`}
+                            onMouseEnter={() => setHoveredLink('logros')}
+                            onMouseLeave={() => setHoveredLink(null)}
+                            onClick={(e) => handleLinkClick('logros', e)}
+                        >
                             <RollingText text="LOGROS" />
                             <svg className="nav-line" width="100%" height="100%" viewBox="0 0 412 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" strokeWidth="4" style={{ strokeDashoffset: '0px', strokeDasharray: '433.208' }}></path>
+                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" strokeWidth="4" style={{ strokeDasharray: '433.208' }}></path>
                             </svg>
                         </a>
-                        <a href="#" className="nav-link">
+                        <a href="#"
+                            className={`nav-link ${activeLink === 'calendario' ? 'active' : ''}`}
+                            onMouseEnter={() => setHoveredLink('calendario')}
+                            onMouseLeave={() => setHoveredLink(null)}
+                            onClick={(e) => handleLinkClick('calendario', e)}
+                        >
                             <RollingText text="CALENDARIO" />
                             <svg className="nav-line" width="100%" height="100%" viewBox="0 0 412 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" strokeWidth="2.5" style={{ strokeDashoffset: '0px', strokeDasharray: '433.208' }}></path>
+                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" strokeWidth="2.5" style={{ strokeDasharray: '433.208' }}></path>
                             </svg>
                         </a>
                     </div>
@@ -152,16 +193,34 @@ const Navigation = ({ isOpen, toggleMenu }) => {
                         <div className="laurel-icon">
                             <img src={laurelHelmet} alt="Laurel Helmet" />
                         </div>
-                        <span className="footer-tagline">ASTON MARTIN F1 TEAM</span>
+                        <span className="footer-tagline">
+                            <span className="reveal-text">ASTON MARTIN F1 TEAM</span>
+                            <span className="reveal-block"></span>
+                        </span>
                     </div>
 
                     <div className="nav-footer-bottom">
-                        <a href="#" className="business-link">BUSINESS ENQUIRIES</a>
+                        <a href="#" className="business-link">
+                            <span className="reveal-text">BUSINESS ENQUIRIES</span>
+                            <span className="reveal-block"></span>
+                        </a>
                         <div className="social-links">
-                            <a href="#">TIKTOK</a>
-                            <a href="#">INSTAGRAM</a>
-                            <a href="#">YOUTUBE</a>
-                            <a href="#">TWITCH</a>
+                            <a href="#">
+                                <span className="reveal-text">TIKTOK</span>
+                                <span className="reveal-block"></span>
+                            </a>
+                            <a href="#">
+                                <span className="reveal-text">INSTAGRAM</span>
+                                <span className="reveal-block"></span>
+                            </a>
+                            <a href="#">
+                                <span className="reveal-text">YOUTUBE</span>
+                                <span className="reveal-block"></span>
+                            </a>
+                            <a href="#">
+                                <span className="reveal-text">TWITCH</span>
+                                <span className="reveal-block"></span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -169,8 +228,14 @@ const Navigation = ({ isOpen, toggleMenu }) => {
 
             <div className={`navigation-header ${isOpen ? 'open' : ''}`}>
                 <div className="brand-logo">
-                    <span className="fname">Fernando</span>
-                    <span className="lname">Alonso14</span>
+                    <span className="fname">
+                        <span className="text-full">Fernando</span>
+                        <span className="text-short">F</span>
+                    </span>
+                    <span className="lname">
+                        <span className="text-full">Alonso14</span>
+                        <span className="text-short">A14</span>
+                    </span>
                 </div>
                 <button className={`btn-menu ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
                     <span className="bar"></span>
