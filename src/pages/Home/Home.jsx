@@ -32,6 +32,15 @@ const Home = () => {
                         const shouldDisable = self.progress > 0.45;
                         heroLogicRef.current.setScrolling(shouldDisable);
                     }
+                    // Toggle header scrolled class
+                    const header = document.querySelector(".main-header");
+                    if (header) {
+                        if (self.progress > 0.01) {
+                            header.classList.add("scrolled");
+                        } else {
+                            header.classList.remove("scrolled");
+                        }
+                    }
                 }
             };
 
@@ -84,16 +93,7 @@ const Home = () => {
                 }, "<");
 
 
-                // Header Color Transition (Desktop)
-                // Select elements globally because Header is outside this component's scope
-                // Duration 0.05 at position 0 ensures immediate change on first scroll
-                const brandLogo = document.querySelector(".brand-logo");
-                const btnMenu = document.querySelector(".btn-menu");
-                const menuBars = document.querySelectorAll(".btn-menu .bar");
 
-                if (brandLogo) tl.to(brandLogo, { color: "#e9eae4", duration: 0.2, ease: "none" }, 0);
-                if (btnMenu) tl.to(btnMenu, { borderColor: "#e9eae4", duration: 0.2, ease: "none" }, 0);
-                if (menuBars.length) tl.to(menuBars, { backgroundColor: "#e9eae4", duration: 0.2, ease: "none" }, 0);
 
                 // Scrollbar Color Transition (Dark -> Lighter Grey)
                 // "First scroll" effect: Rapid transition to #8f8f91
@@ -123,13 +123,7 @@ const Home = () => {
 
 
                 // Header Color Transition (Mobile)
-                const brandLogoM = document.querySelector(".brand-logo");
-                const btnMenuM = document.querySelector(".btn-menu");
-                const menuBarsM = document.querySelectorAll(".btn-menu .bar");
 
-                if (brandLogoM) tl.to(brandLogoM, { color: "#e9eae4", duration: 0.05, ease: "none" }, 0);
-                if (btnMenuM) tl.to(btnMenuM, { borderColor: "#e9eae4", duration: 0.05, ease: "none" }, 0);
-                if (menuBarsM.length) tl.to(menuBarsM, { backgroundColor: "#e9eae4", duration: 0.05, ease: "none" }, 0);
 
                 // Scrollbar Color Transition (Mobile)
                 tl.fromTo(document.body,

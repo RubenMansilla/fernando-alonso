@@ -209,3 +209,17 @@ body:has(.navigation-overlay.open) .brand-logo {
         transform: rotate(-45deg) translateY(-0.5px);
     }
 }
+
+/* Scrolled State - Applied via JS when scrolling on Home */
+.main-header.scrolled .brand-logo {
+    color: #ebeee0;
+}
+
+.main-header.scrolled .btn-menu {
+    background-color: #f4f4ed;
+    border-color: #f4f4ed;
+}
+
+.main-header.scrolled .btn-menu .bar {
+    background-color: #1a1a1a;
+}
