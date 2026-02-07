@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import './Navigation.css';
 import img1 from '../../assets/navbar/navbarImg1.jpg';
 import img2 from '../../assets/navbar/navbarImg2.webp';
-import img3 from '../../assets/navbar/navbarImg3.jpeg';
 import img4 from '../../assets/navbar/navbarImg4.avif';
 import img5 from '../../assets/navbar/navbarImg5.png';
 import laurelHelmet from '../../assets/icon/laurel-helmet.png';
@@ -201,24 +200,24 @@ const Navigation = ({ isOpen, toggleMenu }) => {
 
                     <div className="nav-footer-bottom">
                         <a href="#" className="business-link">
-                            <span className="reveal-text">BUSINESS ENQUIRIES</span>
+                            <span className="reveal-text"><RollingText text="BUSINESS ENQUIRIES" /></span>
                             <span className="reveal-block"></span>
                         </a>
                         <div className="social-links">
                             <a href="#">
-                                <span className="reveal-text">TIKTOK</span>
+                                <span className="reveal-text"><RollingText text="TIKTOK" /></span>
                                 <span className="reveal-block"></span>
                             </a>
                             <a href="#">
-                                <span className="reveal-text">INSTAGRAM</span>
+                                <span className="reveal-text"><RollingText text="INSTAGRAM" /></span>
                                 <span className="reveal-block"></span>
                             </a>
                             <a href="#">
-                                <span className="reveal-text">YOUTUBE</span>
+                                <span className="reveal-text"><RollingText text="YOUTUBE" /></span>
                                 <span className="reveal-block"></span>
                             </a>
                             <a href="#">
-                                <span className="reveal-text">TWITCH</span>
+                                <span className="reveal-text"><RollingText text="TWITCH" /></span>
                                 <span className="reveal-block"></span>
                             </a>
                         </div>
@@ -238,8 +237,14 @@ const Navigation = ({ isOpen, toggleMenu }) => {
                     </span>
                 </div>
                 <button className={`btn-menu ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
-                    <span className="bar"></span>
-                    <span className="bar short"></span>
+                    {isOpen ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 24 24"><g fill="#1a1a1a" fillRule="evenodd" clipRule="evenodd"><path d="M5.47 5.47a.75.75 0 0 1 1.06 0l12 12a.75.75 0 1 1-1.06 1.06l-12-12a.75.75 0 0 1 0-1.06" /><path d="M18.53 5.47a.75.75 0 0 1 0 1.06l-12 12a.75.75 0 0 1-1.06-1.06l12-12a.75.75 0 0 1 1.06 0" /></g></svg>
+                    ) : (
+                        <>
+                            <span className="bar"></span>
+                            <span className="bar short"></span>
+                        </>
+                    )}
                 </button>
             </div>
         </>

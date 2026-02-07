@@ -105,11 +105,23 @@
 .navigation-header .btn-menu {
     border-color: #1a1a1a;
     background-color: #f4f4ed;
-    border: 2px solid #f4f4ed;
+    border: 3px solid #f4f4ed;
 }
+
+.navigation-header .btn-menu svg {
+    width: 28px;
+    height: 28px;
+    fill: #1a1a1a;
+    transition: transform 0.3s ease;
+}
+
 
 .navigation-header .bar {
     background-color: #1a1a1a;
+    width: 20px;
+    height: 3px;
+    display: block;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* =========================
@@ -226,7 +238,7 @@
     bottom: 0;
     left: -4px;
     right: -4px;
-    background-color: #d2ff00;
+    background-color: #2c8ecc;
     z-index: 10;
     transform: scaleX(0);
     transform-origin: 0% 50%;
@@ -282,6 +294,99 @@
     transition:
         opacity 0.3s ease,
         clip-path 0s linear 0.3s;
+}
+
+/* FOOTER ELEMENTS ANIMATION */
+
+/* Laurel Icon - Uses clip-path reveal (no block) */
+.laurel-icon {
+    position: relative;
+    display: inline-block;
+    clip-path: ellipse(150% 0% at 50% 0);
+    opacity: 0;
+    transition:
+        opacity 0.3s ease,
+        clip-path 0s linear 0.3s;
+}
+
+.navigation-content.open .laurel-icon {
+    clip-path: ellipse(150% 220% at 50% 0);
+    opacity: 1;
+    transition:
+        opacity 0s linear,
+        clip-path 1.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Text Elements with Block Reveal - NO clip-path transition */
+.footer-tagline .reveal-text,
+.business-link .reveal-text,
+.social-links a .reveal-text {
+    position: relative;
+    display: inline-block;
+    opacity: 0;
+    /* Opacity handled by keyframes */
+}
+
+
+/* Rolling Text Support for Footer */
+.business-link .nav-text-wrapper {
+    display: inline-block;
+    height: 1.3em;
+    /* Increased to prevent bottom cutoff */
+    overflow: hidden;
+    position: relative;
+    vertical-align: top;
+}
+
+.social-links a .nav-text-wrapper {
+    display: inline-block;
+    height: 1.4em;
+    /* Increased more for social links */
+    overflow: hidden;
+    position: relative;
+    vertical-align: top;
+}
+
+/* Hover Effect: Roll Text Up */
+.business-link:hover .char,
+.social-links a:hover .char {
+    transform: translateY(-100%);
+}
+
+/* Staggered Delays (Escalera) - REVEAL ONLY */
+/* Center Footer */
+.navigation-content.open .laurel-icon {
+    transition-delay: 0.5s;
+}
+
+.navigation-content.open .footer-tagline .reveal-text {
+    transition-delay: 0.6s;
+}
+
+/* Business Link */
+.navigation-content.open .business-link .reveal-text {
+    transition-delay: 0.7s;
+}
+
+/* Social Links - Indivudal Stagger */
+.navigation-content.open .social-links a:nth-child(1) .reveal-text {
+    transition-delay: 0.8s;
+}
+
+.navigation-content.open .social-links a:nth-child(2) .reveal-text {
+    transition-delay: 0.9s;
+}
+
+.navigation-content.open .social-links a:nth-child(3) .reveal-text {
+    transition-delay: 1.0s;
+}
+
+.navigation-content.open .social-links a:nth-child(4) .reveal-text {
+    transition-delay: 1.1s;
+}
+
+.nav-link:hover:not(.active) {
+    color: #2c8ecc;
 }
 
 .navigation-content.open .nav-link {
@@ -367,7 +472,7 @@
     transform: translate(-50%, -50%);
     z-index: 1;
     opacity: 0;
-    color: #d2ff00;
+    color: #2c8ecc;
     /* Neon Lime Green from reference */
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -414,7 +519,7 @@
 .footer-tagline {
     font-size: 10px;
     font-weight: 600;
-    color: #6f7862;
+    color: #b4b8a5;
     text-transform: uppercase;
 }
 
@@ -429,11 +534,13 @@
 
 .business-link {
     font-size: 0.8rem;
-    font-weight: 700;
-    color: #e9eae4;
+    font-weight: 900;
+    color: #f4f4ed;
     text-decoration: none;
     text-transform: uppercase;
     font-family: 'Mona Sans Variable', sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 18px;
 }
 
 .social-links {
@@ -454,10 +561,6 @@
 
 }
 
-.social-links a:hover {
-    color: #d2ff00;
-    /* Use the yellow for hover text too */
-}
 
 .nav-column {
     height: 100vh;
@@ -535,7 +638,7 @@
     opacity: 1;
     /* OPENING: Curtain reveal animation (clip-path only) */
     transition:
-        filter 0.5s ease,
+        filter 0.1s ease,
         opacity 0s linear,
         /* Balanced ease-out: not too fast at start, smooth deceleration */
         clip-path 1.3s cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -652,4 +755,9 @@
         width: 16px;
         transform: rotate(-45deg) translateY(-0.5px);
     }
+}
+
+.navigation-header .btn-menu:hover .bar,
+.navigation-header .btn-menu:focus-visible .bar {
+    background-color: #f4f4ed !important;
 }
