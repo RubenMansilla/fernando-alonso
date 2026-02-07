@@ -4,7 +4,7 @@ import diffuseImg from '../../assets/fernando.png';
 import cascoImg from '../../assets/cascofer.png';
 import wireframeImg from '../../assets/cascovacio.png';
 
-const LiquidHero = ({ disableAnimations }) => {
+const LiquidHero = ({ disableAnimations, isScrolling = false }) => {
     const containerRef = useRef(null);
     const svgRef = useRef(null);
     const baseImgRef = useRef(null);
@@ -40,6 +40,7 @@ const LiquidHero = ({ disableAnimations }) => {
         let lastUserInteraction = Date.now();
         let inactivityTimer = null;
         let W = 0, H = 0;
+        let initialW = 0, initialH = 0;
         let animationFrameId;
 
         const trail = Array.from({ length: TRAIL_COUNT }, () => ({ x: W / 2, y: H / 2, r: 0 }));
@@ -49,39 +50,41 @@ const LiquidHero = ({ disableAnimations }) => {
         const resize = () => {
             if (!container) return;
 
-            // Start resizing state
             if (!isResizingRef.current) {
                 isResizingRef.current = true;
             }
 
-            // Clear existing timeout
             if (resizeTimeoutRef.current) {
                 clearTimeout(resizeTimeoutRef.current);
             }
 
-            // Set timeout to end resizing state
             resizeTimeoutRef.current = setTimeout(() => {
                 isResizingRef.current = false;
-                // Force an update to dimensions once resize ends to ensure accuracy
-                updateDimensions();
-            }, 200); // 200ms debounce
+            }, 200);
 
-            updateDimensions();
+            const newW = container.clientWidth;
+            const newH = container.clientHeight;
+
+            // Always update current dimensions for mask/droplet animation
+            W = newW;
+            H = newH;
+
+            // Only set viewBox and image positions on initial load
+            if (initialW === 0 || initialH === 0) {
+                initialW = newW;
+                initialH = newH;
+                svg.setAttribute("viewBox", `0 0 ${initialW} ${initialH}`);
+                updateDimensions();
+            }
+            // Don't update viewBox during scroll - keep it fixed
         };
 
         const updateDimensions = () => {
-            // Use container dimensions
-            W = container.clientWidth;
-            H = container.clientHeight;
+            if (initialW === 0 || initialH === 0) return;
 
-            // In case container is 0 (hidden), prevent errors
-            if (W === 0 || H === 0) return;
-
-            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-
-            const baseH = H * 0.92;
+            // Reveal helmet uses 92% of height * 1.42 scale
             const REVEAL_SCALE = 1.42;
-            const revealH = baseH * REVEAL_SCALE;
+            const revealH = (initialH * 0.92) * REVEAL_SCALE;
 
             function ensureRatio(imgEl, src, cb) {
                 const tmp = new Image();
@@ -95,20 +98,22 @@ const LiquidHero = ({ disableAnimations }) => {
 
             ensureRatio(baseImg, diffuseImg, (rBase) => {
                 ensureRatio(revealImg, cascoImg, (rReveal) => {
+                    // baseImg ocupa 92% de la altura y pegado al borde inferior
+                    const baseH = initialH * 0.92;
                     const baseW = baseH * rBase;
-                    const baseX = (W - baseW) / 2;
-                    const baseY = H - baseH;
+                    const baseX = (initialW - baseW) / 2;
+                    const baseY = initialH - baseH; // Pegado al borde inferior
 
                     baseImg.setAttribute("x", baseX);
                     baseImg.setAttribute("y", baseY);
                     baseImg.setAttribute("width", baseW);
                     baseImg.setAttribute("height", baseH);
-                    baseImg.setAttribute("preserveAspectRatio", "xMidYMid slice");
+                    baseImg.setAttribute("preserveAspectRatio", "xMidYMax meet"); // Always anchor to bottom
 
                     const revealW = revealH * rReveal;
-                    const revealX = (W - revealW) / 2;
-                    const REVEAL_Y_OFFSET = H * 0.21;
-                    const revealY = (H - revealH) + REVEAL_Y_OFFSET;
+                    const revealX = (initialW - revealW) / 2;
+                    const REVEAL_Y_OFFSET = initialH * 0.21;
+                    const revealY = (initialH - revealH) + REVEAL_Y_OFFSET;
 
                     revealImg.setAttribute("x", revealX);
                     revealImg.setAttribute("y", revealY);
@@ -116,7 +121,6 @@ const LiquidHero = ({ disableAnimations }) => {
                     revealImg.setAttribute("height", revealH);
                     revealImg.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
-                    // Wireframe scale adjustment (slightly smaller to match visual size)
                     const wireScale = 0.968;
                     const wireW = revealW * wireScale;
                     const wireH = revealH * wireScale;
@@ -130,19 +134,14 @@ const LiquidHero = ({ disableAnimations }) => {
                     wireframeImg.setAttribute("preserveAspectRatio", "xMidYMid meet");
                 });
             });
-        }
+        };
 
-
-        // Use ResizeObserver for more robust container resizing detection
         const resizeObserver = new ResizeObserver(resize);
         resizeObserver.observe(container);
 
-        // Initial resize
         updateDimensions();
-        // Force update after a short delay to ensure DOM is ready
         setTimeout(updateDimensions, 100);
 
-        // Logic functions
         function buildDropletPath() {
             const centers = [];
             const left = [];
@@ -342,10 +341,20 @@ const LiquidHero = ({ disableAnimations }) => {
 
         // Interaction Handler
         const handleMove = (cx, cy) => {
-            if (!svg) return; // Removed isResizingRef check to allow scroll interaction
+            if (!svg) return;
             const rect = svg.getBoundingClientRect();
-            target.x = cx - rect.left;
-            target.y = cy - rect.top;
+
+            // Get mouse position relative to current container
+            const relX = cx - rect.left;
+            const relY = cy - rect.top;
+
+            // Scale to viewBox coordinates (initial dimensions)
+            // viewBox uses initialW x initialH, but container is now rect.width x rect.height
+            const scaleX = initialW / rect.width;
+            const scaleY = initialH / rect.height;
+
+            target.x = relX * scaleX;
+            target.y = relY * scaleY;
 
             lastUserInteraction = Date.now();
             isAutoMoving = false;
