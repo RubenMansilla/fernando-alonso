@@ -1,0 +1,33 @@
+export const CIRCUIT_MESH_MAP = {
+    "yas-marina": "mesh",
+    "melbourne": "mesh001",
+    "speilberg": "mesh002",
+    "baku": "mesh003",
+    "sakhir": "mesh004",
+    "spa-francorchamps": "mesh005",
+    "sao-paulo": "mesh006",
+    "montreal": "mesh007",
+    "shanghai": "mesh008",
+    "imola": "mesh009",
+    "silverstone": "mesh010",
+    "mogyorod": "mesh011",
+    "monza": "mesh012",
+    "suzuka": "mesh013",
+    "las-vegas": "mesh014",
+    "mexico-city": "mesh015",
+    "miami": "mesh016",
+    "monaco": "mesh017",
+    "lusail": "mesh019",
+    "jeddah": "mesh020",
+    "singapore": "mesh021",
+    "barcelona": "mesh022",
+    "austin": "mesh023",
+    "zandvoort": "mesh024",
+};
+
+export const CIRCUIT_ORDER = [
+    "yas-marina", "lusail", "las-vegas", "sao-paulo", "mexico-city", "austin",
+    "singapore", "baku", "monza", "zandvoort", "mogyorod", "spa-francorchamps",
+    "speilberg", "montreal", "barcelona", "imola", "melbourne", "shanghai",
+    "suzuka", "sakhir", "jeddah", "miami", "monaco", "silverstone"
+];

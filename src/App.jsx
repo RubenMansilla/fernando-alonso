@@ -5,6 +5,8 @@ import AnimatedBackground from './components/AnimatedBackground/AnimatedBackgrou
 import CustomScrollbar from './components/CustomScrollbar/CustomScrollbar'
 import Home from './pages/Home/Home'
 import './App.css'
+import Circuits from './components/Circuits/Circuits'
+import TrackMapper from './components/TrackMapper'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
@@ -48,13 +50,17 @@ function App() {
     }
   }, [])
 
+  const path = window.location.pathname;
+
   return (
     <>
       {isLoading && <LoadingScreen onLoadComplete={() => setIsLoading(false)} />}
       <CustomScrollbar />
       <Header />
       <AnimatedBackground />
-      <Home />
+      {path === '/circuits' && <Circuits />}
+      {path === '/debug-tracks' && <TrackMapper />}
+      {path === '/' && <Home />}
     </>
   )
 }
