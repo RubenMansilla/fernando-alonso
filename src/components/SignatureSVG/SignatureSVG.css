@@ -1,0 +1,33 @@
+.signature-svg-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    max-width: 800px;
+    z-index: 3;
+    /* Above HeroCard (z-index: 2) */
+    pointer-events: none;
+    /* Allow clicks to pass through */
+}
+
+.signature-svg-container .signature {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+
+
+/* Responsive adjustments */
+@media screen and (max-width: 1024px) {
+    .signature-svg-container {
+        width: 70%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .signature-svg-container {
+        width: 85%;
+    }
+}

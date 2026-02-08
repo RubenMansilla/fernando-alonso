@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HeroCard from '../../components/HeroCard/HeroCard';
 import ContentSection from '../../components/ContentSection/ContentSection';
+import SignatureSVG from '../../components/SignatureSVG/SignatureSVG';
 import './Home.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -102,6 +103,24 @@ const Home = () => {
                     { "--sb-thumb-color": "#aba9af", duration: 0.15, ease: "none" },
                     0
                 );
+
+                // SVG Signature Animation
+                // Matches the end of the scroll exactly.
+                // Starts at 70% of the timeline (0.35s / 0.5s)
+                // Stroke continues until the very end to avoid dead scroll
+                tl.fromTo(".sig-path",
+                    { strokeDashoffset: 1 },
+                    { strokeDashoffset: 0, ease: "none", duration: 0.15 },
+                    0.35
+                );
+
+                // Fill Animation (Fade in during the last part of stroke)
+                // Overlaps significantly to ensure no dead space
+                tl.to(".sig-path", {
+                    fillOpacity: 1,
+                    duration: 0.05,
+                    ease: "power2.inOut"
+                }, ">-0.05"); // Starts at 90% of scroll
             });
 
             // 2. Tablet Portrait (500px - 799px)
@@ -148,6 +167,20 @@ const Home = () => {
                     ease: "power2.inOut"
                 }, "<");
 
+                // SVG Signature Animation (Tablet)
+                // Stroke continues until the very end to avoid dead scroll
+                tl.fromTo(".sig-path",
+                    { strokeDashoffset: 1 },
+                    { strokeDashoffset: 0, ease: "none", duration: 0.15 },
+                    0.35
+                );
+
+                // Fill Animation (Fade in during the last part of stroke)
+                tl.to(".sig-path", {
+                    fillOpacity: 1,
+                    duration: 0.05,
+                    ease: "power2.inOut"
+                }, ">-0.05"); // Starts at 90% of scroll
             });
 
             // 3. Mobile (menos de 500px) - HeroCard más grande
@@ -194,6 +227,20 @@ const Home = () => {
                     ease: "power2.inOut"
                 }, "<");
 
+                // SVG Signature Animation (Mobile)
+                // Stroke continues until the very end to avoid dead scroll
+                tl.fromTo(".sig-path",
+                    { strokeDashoffset: 1 },
+                    { strokeDashoffset: 0, ease: "none", duration: 0.15 },
+                    0.35
+                );
+
+                // Fill Animation (Fade in during the last part of stroke)
+                tl.to(".sig-path", {
+                    fillOpacity: 1,
+                    duration: 0.05,
+                    ease: "power2.inOut"
+                }, ">-0.05"); // Starts at 90% of scroll
             });
 
         }, mainRef);
@@ -221,6 +268,9 @@ const Home = () => {
                 }}>
                     <ContentSection />
                 </div>
+
+                {/* Signature SVG Layer - Above HeroCard */}
+                <SignatureSVG />
 
                 {/* Foreground Card Layer */}
                 <div ref={heroAnimRef} className="hero-card-animatable" style={{
