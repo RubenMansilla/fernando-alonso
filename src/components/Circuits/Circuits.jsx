@@ -36,19 +36,20 @@ const CircuitsGrid = () => {
 
       {/* --- 3D VIEWER SECTION --- */}
       <div className="track-viewer-panel" style={{
-        height: '400px',
+        height: '460px',            // ✅ un poco más alto que 400 (más parecido a la captura)
         width: '100%',
-        maxWidth: '1200px',
+        maxWidth: '1600px',         // ✅ más ancho (la captura es MUY ancha)
         margin: '0 auto 40px',
-        background: '#1a1a1a',
-        borderRadius: '24px',
+        // ✅ mismo fondo que tu canvas (para que se integre)
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         position: 'relative',
-        border: '1px solid #333'
+        border: '1px solid rgba(202,255,0,0.18)',   // ✅ borde neon suave
+
       }}>
+
         <div style={{ flex: 1, width: '100%', position: 'relative' }}>
           {selected && CIRCUIT_MESH_MAP[selected] ? (
             <TrackDisplay3D meshName={CIRCUIT_MESH_MAP[selected]} />

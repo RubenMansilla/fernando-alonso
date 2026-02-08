@@ -1,19 +1,198 @@
-import React, { useState, useEffect, useMemo } from "react";
+// TrackDisplay3D.jsx
+import React, { useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useGLTF, OrbitControls, OrthographicCamera } from "@react-three/drei";
 import * as THREE from "three";
-import { EffectComposer, Bloom, Vignette, Outline } from "@react-three/postprocessing";
-import { Selection, Select } from "@react-three/postprocessing";
-import { Line2 } from "three/examples/jsm/lines/Line2.js";
-import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
-import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
-import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { EffectComposer, Vignette } from "@react-three/postprocessing";
+import { Selection } from "@react-three/postprocessing";
+import ClipperLib from "clipper-lib";
 
+/**
+ * ---------- HELPERS (Boundary -> Loops -> Paths XZ) ----------
+ */
 
+// 1) Boundary edges: aristas que aparecen 1 sola vez en la triangulación (contorno real)
+function getBoundaryEdges(geom) {
+    const g = geom.index ? geom : geom.toNonIndexed();
+    const pos = g.attributes.position.array;
+    const idx = g.index ? g.index.array : null;
 
+    const edgeCount = new Map();
+    const triCount = idx ? idx.length / 3 : pos.length / 9;
+    const getV = (i) => (idx ? idx[i] : i);
 
+    for (let t = 0; t < triCount; t++) {
+        const a = getV(t * 3 + 0);
+        const b = getV(t * 3 + 1);
+        const c = getV(t * 3 + 2);
 
+        const edges = [
+            [a, b],
+            [b, c],
+            [c, a],
+        ];
 
+        for (const [u, v] of edges) {
+            const m = Math.min(u, v);
+            const M = Math.max(u, v);
+            const key = `${m}_${M}`;
+            edgeCount.set(key, (edgeCount.get(key) || 0) + 1);
+        }
+    }
+
+    const boundary = [];
+    for (const [key, count] of edgeCount.entries()) {
+        if (count === 1) {
+            const [a, b] = key.split("_").map(Number);
+            boundary.push([a, b]);
+        }
+    }
+
+    return { boundary, pos };
+}
+
+// 2) Construye loops cerrados a partir de boundary edges
+function buildLoopsFromEdges(boundaryPairs) {
+    const adj = new Map();
+    for (const [a, b] of boundaryPairs) {
+        if (!adj.has(a)) adj.set(a, new Set());
+        if (!adj.has(b)) adj.set(b, new Set());
+        adj.get(a).add(b);
+        adj.get(b).add(a);
+    }
+
+    const used = new Set();
+    const normKey = (u, v) => `${Math.min(u, v)}_${Math.max(u, v)}`;
+
+    const loops = [];
+
+    for (const [start, neighSet] of adj.entries()) {
+        for (const next of neighSet) {
+            const ek = normKey(start, next);
+            if (used.has(ek)) continue;
+
+            const loop = [start];
+            let prev = start;
+            let cur = next;
+            used.add(ek);
+
+            while (true) {
+                loop.push(cur);
+                const neighbors = Array.from(adj.get(cur) || []);
+                if (neighbors.length === 0) break;
+
+                let candidate = null;
+                for (const n of neighbors) {
+                    if (n === prev) continue;
+                    const k = normKey(cur, n);
+                    if (!used.has(k)) {
+                        candidate = n;
+                        break;
+                    }
+                }
+
+                if (candidate == null) {
+                    if ((adj.get(cur) || new Set()).has(start)) used.add(normKey(cur, start));
+                    break;
+                }
+
+                used.add(normKey(cur, candidate));
+                prev = cur;
+                cur = candidate;
+                if (cur === start) break;
+            }
+
+            if (loop.length >= 3) loops.push(loop);
+        }
+    }
+
+    return loops;
+}
+
+// 3) Convierte loops (indices) a paths XZ (float) sin offset
+function loopsToPathsXZ(loops, posArray) {
+    return loops
+        .map((loop) =>
+            loop.map((vi) => ({
+                x: posArray[vi * 3 + 0],
+                z: posArray[vi * 3 + 2],
+            }))
+        )
+        .filter((p) => p.length >= 3);
+}
+
+// 4) Offset robusto con Clipper en XZ
+function offsetPathsXZ(pathsXZ, offsetDistance, miterLimit = 2) {
+    const SCALE = 1e6;
+
+    const input = pathsXZ.map((path) =>
+        path.map((pt) => ({ X: Math.round(pt.x * SCALE), Y: Math.round(pt.z * SCALE) }))
+    );
+
+    const cleaned = input
+        .map((p) => ClipperLib.Clipper.CleanPolygon(p, 2))
+        .filter((p) => p && p.length >= 3);
+
+    const co = new ClipperLib.ClipperOffset(miterLimit, 0.25 * SCALE);
+    co.AddPaths(cleaned, ClipperLib.JoinType.jtMiter, ClipperLib.EndType.etClosedPolygon);
+
+    const solution = new ClipperLib.Paths();
+    co.Execute(solution, offsetDistance * SCALE);
+
+    return solution
+        .filter((p) => p.length >= 3)
+        .map((p) => p.map((pt) => ({ x: pt.X / SCALE, z: pt.Y / SCALE })));
+}
+
+// 5) LineSegments desde paths XZ (y fijo a 0)
+function makeLineFromPaths(pathsXZ, material) {
+    const positions = [];
+    for (const path of pathsXZ) {
+        for (let i = 0; i < path.length; i++) {
+            const a = path[i];
+            const b = path[(i + 1) % path.length];
+            positions.push(a.x, 0, a.z, b.x, 0, b.z);
+        }
+    }
+
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    return new THREE.LineSegments(g, material);
+}
+
+// 6) Muro entre front path (y=0) y back transformado (scale+offset local)
+function makeWallBetweenPaths(pathsXZ, wallMat, backScaleLocal, backOffsetLocal) {
+    const verts = [];
+
+    for (const path of pathsXZ) {
+        for (let i = 0; i < path.length; i++) {
+            const p1 = path[i];
+            const p2 = path[(i + 1) % path.length];
+
+            const top1 = { x: p1.x, y: 0, z: p1.z };
+            const top2 = { x: p2.x, y: 0, z: p2.z };
+
+            const bot1 = {
+                x: p1.x * backScaleLocal + backOffsetLocal.x,
+                y: backOffsetLocal.y,
+                z: p1.z * backScaleLocal + backOffsetLocal.z,
+            };
+            const bot2 = {
+                x: p2.x * backScaleLocal + backOffsetLocal.x,
+                y: backOffsetLocal.y,
+                z: p2.z * backScaleLocal + backOffsetLocal.z,
+            };
+
+            verts.push(top1.x, top1.y, top1.z, bot1.x, bot1.y, bot1.z, top2.x, top2.y, top2.z);
+            verts.push(bot1.x, bot1.y, bot1.z, bot2.x, bot2.y, bot2.z, top2.x, top2.y, top2.z);
+        }
+    }
+
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
+    g.computeVertexNormals();
+    return new THREE.Mesh(g, wallMat);
+}
 
 export function TrackDisplay3D({ meshName }) {
     const { scene } = useGLTF("/models/tracks-05.glb");
@@ -29,7 +208,7 @@ export function TrackDisplay3D({ meshName }) {
             return;
         }
 
-        // --- Geometría en world y centrada ---
+        // --- Geometría base en world, centrada ---
         target.updateWorldMatrix(true, false);
         const geometry = target.geometry.clone();
         geometry.applyMatrix4(target.matrixWorld);
@@ -41,25 +220,29 @@ export function TrackDisplay3D({ meshName }) {
         box.getSize(size);
         const maxDim = Math.max(size.x, size.y, size.z);
         const scale = maxDim > 0 ? 6 / maxDim : 1;
+
+        // Back transform (LOCAL)
         const gapY = 0.05;
-        const outerScale = 1.06;   // cuánto “rodean” por fuera (1.03 - 1.09)
-        const outerAlpha = 0.18;    // fuerza del aro exterior (0.10 - 0.28)
-        const outerGlowAlpha = 0.08; // halo
-        const yFront = 0;
-        const yBack = gapY * scale;
+        const backScaleLocal = 1.02;
+        const backOffsetLocal = new THREE.Vector3(0.01, gapY, 0.01);
 
-        // Bordes
-        const edges = new THREE.EdgesGeometry(geometry, 1);
+        // --- Sacar contorno REAL (boundary) y construir paths ---
+        let loops = [];
+        let basePaths = [];
+        try {
+            const { boundary, pos } = getBoundaryEdges(geometry);
+            loops = buildLoopsFromEdges(boundary);
+            basePaths = loopsToPathsXZ(loops, pos);
+        } catch (e) {
+            console.warn("Boundary extraction failed:", e);
+            setElement(null);
+            return;
+        }
 
-        const hitMesh = new THREE.Mesh(
-            geometry,
-            new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
-        );
-        hitMesh.scale.setScalar(scale);
-
-        // --- Materiales neon (aditivo) ---
-        const coreMat = new THREE.LineBasicMaterial({
-            color: new THREE.Color("#eaff4a"),
+        // ---------------- MATERIALES ----------------
+        // Inner
+        const innerCoreMat = new THREE.LineBasicMaterial({
+            color: new THREE.Color("#00056dff"),
             transparent: true,
             opacity: 1,
             blending: THREE.AdditiveBlending,
@@ -68,273 +251,166 @@ export function TrackDisplay3D({ meshName }) {
             toneMapped: false,
         });
 
-        const glowMat = new THREE.LineBasicMaterial({
+        const innerGlowMat = new THREE.LineBasicMaterial({
+            color: new THREE.Color("#ff0000ff"),
+            transparent: true,
+            opacity: 0.18,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            depthTest: false,
+            toneMapped: false,
+        });
+
+        const innerStrokeMat = new THREE.LineBasicMaterial({
             color: new THREE.Color("#caff00"),
             transparent: true,
-            opacity: 0.25,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-            depthTest: false, // para que el halo no se corte
-            toneMapped: false,
-        });
-
-        const wallMat = new THREE.LineBasicMaterial({
-            color: "#caff00",
-            transparent: true,
-            opacity: 0.06,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-            depthTest: true,     // <-- CLAVE (antes lo tenías false)
-            toneMapped: false,
-        });
-
-
-        // --- Capas: core + glow (varias) + “pared” vertical ---
-        const core = new THREE.LineSegments(edges, coreMat);
-        core.scale.setScalar(scale);
-
-        // Halos: copias ligeramente escaladas
-        const glow1 = new THREE.LineSegments(edges, glowMat);
-        glow1.scale.setScalar(scale * 1.01);
-
-        const glow2 = new THREE.LineSegments(edges, glowMat);
-        glow2.scale.setScalar(scale * 1.02);
-        glow2.material.opacity = 0.18;
-
-        const glow3 = new THREE.LineSegments(edges, glowMat);
-        glow3.scale.setScalar(scale * 1.035);
-        glow3.material.opacity = 0.12;
-
-
-
-
-        // --- BACKPLATE (segunda silueta para dar 3D) ---
-        const backCoreMat = new THREE.LineBasicMaterial({
-            color: new THREE.Color("#eaff4a"),     // un pelín más verdoso/oscuro
-            transparent: true,
-            opacity: 0.55,
-            blending: THREE.AdditiveBlending,
+            opacity: 0.22,
+            blending: THREE.NormalBlending, // ✅ evita sumas “doble línea”
             depthWrite: false,
             depthTest: true,
             toneMapped: false,
         });
 
-        // core trasero
-        const backCore = new THREE.LineSegments(edges, backCoreMat);
-        backCore.scale.setScalar(scale * 1.02);      // un poquito más grande
-        backCore.position.y = gapY * scale;         // un poquito más abajo
-        backCore.position.x = 0.01 * scale;          // opcional: micro desplazamiento
-        backCore.position.z = 0.01 * scale;          // opcional: micro desplazamiento
-
-
-        // ---------------- PARED SÓLIDA ENTRE FRONT Y BACK ----------------
-        // Generar geometría custom conectando los edges de arriba con los de abajo
-        const wallGeometry = new THREE.BufferGeometry();
-        const edgePos = edges.attributes.position.array;
-        const wallVertices = [];
-        // La "profundidad" de la pared es gapY * scale (lo mismo que baja el backCore)
-        const wallDepth = gapY;
-
-        for (let i = 0; i < edgePos.length; i += 6) {
-            // Puntos del segmento superior (original)
-            const x1 = edgePos[i], y1 = edgePos[i + 1], z1 = edgePos[i + 2];
-            const x2 = edgePos[i + 3], y2 = edgePos[i + 4], z2 = edgePos[i + 5];
-
-
-            // Triángulo 1
-            // Top1, Bottom1, Top2
-            wallVertices.push(
-                x1, y1, z1,                 // Top1
-                x1, y1 + wallDepth, z1,     // Bottom1 extended
-                x2, y2, z2                  // Top2
-            );
-
-            // Triángulo 2
-            // Bottom1, Bottom2, Top2
-            wallVertices.push(
-                x1, y1 + wallDepth, z1,     // Bottom1 extended
-                x2, y2 + wallDepth, z2,     // Bottom2 extended
-                x2, y2, z2                  // Top2
-            );
-        }
-
-        wallGeometry.setAttribute('position', new THREE.Float32BufferAttribute(wallVertices, 3));
-        wallGeometry.computeVertexNormals();
-
-        const solidWallMat = new THREE.MeshBasicMaterial({
+        const innerWallMat = new THREE.MeshBasicMaterial({
             color: "#caff00",
             transparent: false,
-            opacity: 0.8,
+            opacity: 1,
             side: THREE.DoubleSide,
             depthWrite: true,
             depthTest: true,
         });
+        // evita z-fighting con líneas
+        innerWallMat.polygonOffset = true;
+        innerWallMat.polygonOffsetFactor = 1;
+        innerWallMat.polygonOffsetUnits = 1;
 
-        const solidWallMesh = new THREE.Mesh(wallGeometry, solidWallMat);
-        // El wallGeometry ya tiene el shift aplicado en sus vértices de "abajo", 
-        // así que el mesh va en la misma posición que el front (0,0,0) relativo al grupo
-        solidWallMesh.scale.setScalar(scale);
+        // Outer
+        const outerLineMat = new THREE.LineBasicMaterial({
+            color: new THREE.Color("#caff00"),
+            transparent: true,
+            opacity: 0.16,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            depthTest: true,
+            toneMapped: false,
+        });
 
-        // ---- DOUBLE STROKE (micro capas) ----
-        // escalas pequeñas para simular doble línea exterior sin deformaciones raras
-        const strokeScales = [1.006, 1.012]; // prueba 1.004-1.02
-        const strokeMats = strokeScales.map((_, idx) =>
-            new THREE.LineBasicMaterial({
-                color: new THREE.Color("#caff00"),
-                transparent: true,
-                opacity: idx === 0 ? 0.35 : 0.18,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-                depthTest: true,
-                toneMapped: false,
-            })
+        const outerWallMat = new THREE.MeshBasicMaterial({
+            color: "#caff00",
+            transparent: true,
+            opacity: 1,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+            depthTest: true,
+        });
+
+        // ---------------- INNER (CREADO DESDE CERO COMO EL OUTER) ----------------
+        const innerCore = makeLineFromPaths(basePaths, innerCoreMat);
+        innerCore.scale.setScalar(scale);
+
+        const innerGlow = makeLineFromPaths(basePaths, innerGlowMat);
+        innerGlow.scale.setScalar(scale);
+
+        const innerFrontStroke = makeLineFromPaths(basePaths, innerStrokeMat);
+        innerFrontStroke.scale.setScalar(scale);
+
+        // Back: mismo contorno pero transform del back (scale+offset) aplicados al OBJETO (no a puntos)
+        const innerBackStroke = makeLineFromPaths(basePaths, innerStrokeMat.clone());
+        innerBackStroke.scale.setScalar(scale * backScaleLocal);
+        innerBackStroke.position.set(
+            backOffsetLocal.x * scale,
+            backOffsetLocal.y * scale,
+            backOffsetLocal.z * scale
         );
+        innerBackStroke.material.opacity = 0.14;
 
-        // FRONT strokes
-        const frontStroke1 = new THREE.LineSegments(edges, strokeMats[0]);
-        frontStroke1.scale.setScalar(scale * strokeScales[0]);
-        frontStroke1.position.y = yFront;
+        // Wall inner: conecta front paths con back transformado (en LOCAL, luego escalamos todo)
+        const innerWall = makeWallBetweenPaths(basePaths, innerWallMat, backScaleLocal, backOffsetLocal);
+        innerWall.scale.setScalar(scale);
 
-        const frontStroke2 = new THREE.LineSegments(edges, strokeMats[1]);
-        frontStroke2.scale.setScalar(scale * strokeScales[1]);
-        frontStroke2.position.y = yFront;
+        // ---------------- OUTER (OFFSET DE ESE MISMO CONTORNO) ----------------
+        const outerOffset = 0.03; // ajusta 0.02–0.06
+        let outerPaths = [];
+        try {
+            outerPaths = offsetPathsXZ(basePaths, outerOffset);
+        } catch (e) {
+            console.warn("Clipper offset failed (outer):", e);
+            outerPaths = [];
+        }
 
-        // BACK strokes
-        const backStroke1 = new THREE.LineSegments(edges, strokeMats[0].clone());
-        backStroke1.scale.setScalar(scale * 1.02 * strokeScales[0]);
-        backStroke1.position.y = yBack;
-        backStroke1.position.x = 0.01 * scale;
-        backStroke1.position.z = 0.01 * scale;
+        let outerFrontLine = null;
+        let outerBackLine = null;
+        let outerWall = null;
 
-        const backStroke2 = new THREE.LineSegments(edges, strokeMats[1].clone());
-        backStroke2.scale.setScalar(scale * 1.02 * strokeScales[1]);
-        backStroke2.position.copy(backStroke1.position);
+        if (outerPaths && outerPaths.length) {
+            outerFrontLine = makeLineFromPaths(outerPaths, outerLineMat);
+            outerFrontLine.scale.setScalar(scale);
 
-        // -------- HIT MESH FRONT (outline arriba) --------
-        const hitMeshFront = new THREE.Mesh(
-            geometry,
-            new THREE.MeshBasicMaterial({
-                transparent: true,
-                opacity: 0,
-                depthWrite: false,
-            })
-        );
-        hitMeshFront.scale.setScalar(scale);
-        hitMeshFront.position.y = 0; // misma altura que el front
+            outerBackLine = makeLineFromPaths(outerPaths, outerLineMat.clone());
+            outerBackLine.scale.setScalar(scale * backScaleLocal);
+            outerBackLine.position.copy(innerBackStroke.position);
+            outerBackLine.material.opacity = 0.11;
 
-        // -------- HIT MESH BACK (outline abajo) --------
-        const hitMeshBack = new THREE.Mesh(
-            geometry,
-            new THREE.MeshBasicMaterial({
-                transparent: true,
-                opacity: 0,
-                depthWrite: false,
-            })
-        );
-        hitMeshBack.scale.setScalar(scale * 1.02); // igual que backCore
-        hitMeshBack.position.y = yBack; // misma altura que backCore/backStack
+            outerWall = makeWallBetweenPaths(outerPaths, outerWallMat, backScaleLocal, backOffsetLocal);
+            outerWall.scale.setScalar(scale);
+        }
 
-
-        const makeThickEdges = (edgesGeom, color, linewidth, opacity) => {
-            // edgesGeom es EdgesGeometry (BufferGeometry)
-            const pos = edgesGeom.attributes.position.array;
-            const points = [];
-            for (let i = 0; i < pos.length; i += 3) {
-                points.push(pos[i], pos[i + 1], pos[i + 2]);
-            }
-
-            const g = new LineGeometry();
-            g.setPositions(points);
-
-            const m = new LineMaterial({
-                color: new THREE.Color(color),
-                linewidth, // en "world units" relativas a resolution (se ve como px)
-                transparent: true,
-                opacity,
-                depthTest: true,
-                depthWrite: false,
-            });
-
-            // IMPORTANT: resolution para que el grosor funcione
-            m.resolution.set(window.innerWidth, window.innerHeight);
-
-            const line = new Line2(g, m);
-            line.computeLineDistances();
-            return line;
-        };
-
-
-
-        // Grupo final (ligera inclinación si quieres)
+        // ---------------- RENDER ----------------
         setElement(
             <group>
-                {/* Wall Solida */}
-                <primitive object={solidWallMesh} />
+                {/* OUTER */}
+                {outerWall && <primitive object={outerWall} />}
+                {outerBackLine && <primitive object={outerBackLine} />}
+                {outerFrontLine && <primitive object={outerFrontLine} />}
 
-                {/* BACK (outline + doble stroke + líneas) */}
-                <Select enabled>
-                    <primitive object={hitMeshBack} />
-                </Select>
+                {/* INNER */}
+                <primitive object={innerWall} />
+                <primitive object={innerBackStroke} />
+                <primitive object={innerFrontStroke} />
 
-                {/* doble capa exterior BACK */}
-                <primitive object={backStroke2} />
-                <primitive object={backStroke1} />
-
-                <primitive object={backCore} />
-
-
-
-                {/* FRONT (outline + doble stroke + líneas) */}
-                <Select enabled>
-                    <primitive object={hitMeshFront} />
-                </Select>
-
-                {/* doble capa exterior FRONT */}
-                <primitive object={frontStroke2} />
-                <primitive object={frontStroke1} />
-
-
-                <primitive object={glow3} />
-                <primitive object={glow2} />
-                <primitive object={glow1} />
-                <primitive object={core} />
+                <primitive object={innerGlow} />
+                <primitive object={innerCore} />
             </group>
         );
 
-
-        // Cleanup (evita leaks si cambias meshName)
+        // ---------------- CLEANUP ----------------
         return () => {
             geometry.dispose?.();
-            edges.dispose?.();
-            wallGeometry.dispose?.();
-            coreMat.dispose?.();
-            glowMat.dispose?.();
-            wallMat.dispose?.();
-            solidWallMat.dispose?.();
-            backCoreMat.dispose?.();
-            strokeMats.forEach(m => m.dispose?.());
 
+            innerCore.geometry?.dispose?.();
+            innerGlow.geometry?.dispose?.();
+            innerFrontStroke.geometry?.dispose?.();
+            innerBackStroke.geometry?.dispose?.();
+            innerWall.geometry?.dispose?.();
+
+            outerFrontLine?.geometry?.dispose?.();
+            outerBackLine?.geometry?.dispose?.();
+            outerWall?.geometry?.dispose?.();
+
+            innerCoreMat.dispose?.();
+            innerGlowMat.dispose?.();
+            innerStrokeMat.dispose?.();
+            innerBackStroke.material?.dispose?.(); // clone
+            innerWallMat.dispose?.();
+
+            outerLineMat.dispose?.();
+            outerBackLine?.material?.dispose?.(); // clone
+            outerWallMat.dispose?.();
         };
     }, [scene, meshName]);
 
     return (
         <Canvas
-            gl={{
-                antialias: true,
-                alpha: false,
-                powerPreference: "high-performance",
-            }}
+            style={{ width: "100%", height: "100%" }}
+            gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
             dpr={[1, 2]}
         >
             <Selection>
-                {/* Fondo + atmósfera */}
                 <color attach="background" args={["#0b0f0c"]} />
                 <fog attach="fog" args={["#0b0f0c", 6, 18]} />
 
-                {/* Cámara ORTHO */}
-                <OrthographicCamera makeDefault position={[6, 6, 6]} zoom={120} />
+                <OrthographicCamera makeDefault position={[6, 6, 6]} zoom={120} near={-100} far={100} />
 
-                {/* Luz */}
                 <ambientLight intensity={0.2} />
                 <pointLight position={[10, 10, 10]} intensity={0.6} />
 
@@ -349,20 +425,10 @@ export function TrackDisplay3D({ meshName }) {
                     maxPolarAngle={Math.PI / 2}
                 />
 
-                {/* POST */}
                 <EffectComposer multisampling={0}>
-                    <Outline
-                        blur
-                        edgeStrength={6.0}
-                        visibleEdgeColor={0xcaff00}
-                        hiddenEdgeColor={0x0b0f0c}
-                        width={1800}
-                    />
-
                     <Vignette eskil={false} offset={0.2} darkness={0.7} />
                 </EffectComposer>
             </Selection>
         </Canvas>
     );
-
 }

@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import Header from './components/Header/Header'
 import LoadingScreen from './components/LoadingScreen/LoadingScreen'
 import AnimatedBackground from './components/AnimatedBackground/AnimatedBackground'
@@ -7,9 +8,14 @@ import Home from './pages/Home/Home'
 import './App.css'
 import Circuits from './components/Circuits/Circuits'
 import TrackMapper from './components/TrackMapper'
+import Calendar from './pages/Calendar/Calendar'
+import Career from './pages/Career/Career'
+import Honors from './pages/Honors/Honors'
 
-function App() {
+function AppContent() {
   const [isLoading, setIsLoading] = useState(true)
+  const location = useLocation()
+
   useEffect(() => {
     // Logic to reload page when switching between major breakpoints:
     // Mobile (<500px) <-> Tablet (500px-799px) <-> Desktop (>=800px)
@@ -50,18 +56,30 @@ function App() {
     }
   }, [])
 
-  const path = window.location.pathname;
-
   return (
     <>
       {isLoading && <LoadingScreen onLoadComplete={() => setIsLoading(false)} />}
       <CustomScrollbar />
       <Header />
       <AnimatedBackground />
-      {path === '/circuits' && <Circuits />}
-      {path === '/debug-tracks' && <TrackMapper />}
-      {path === '/' && <Home />}
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/career" element={<Career />} />
+        <Route path="/honors" element={<Honors />} />
+        <Route path="/circuits" element={<Circuits />} />
+        <Route path="/debug-tracks" element={<TrackMapper />} />
+      </Routes>
     </>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   )
 }
 

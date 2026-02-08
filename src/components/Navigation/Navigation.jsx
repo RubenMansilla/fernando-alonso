@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './Navigation.css';
 import img1 from '../../assets/navbar/navbarImg1.jpg';
 import img2 from '../../assets/navbar/navbarImg2.webp';
@@ -6,7 +7,6 @@ import img4 from '../../assets/navbar/navbarImg4.avif';
 import img5 from '../../assets/navbar/navbarImg5.png';
 import laurelHelmet from '../../assets/icon/laurel-helmet.png';
 
-// Función de ayuda para la interpolación (suavizado matemático)
 // Función de ayuda para la interpolación (suavizado matemático)
 const lerp = (start, end, factor) => {
     return start + (end - start) * factor;
@@ -35,8 +35,8 @@ const RollingText = ({ text }) => (
 );
 
 const Navigation = ({ isOpen, toggleMenu }) => {
-
     const gridRef = useRef(null);
+    const location = useLocation();
 
     // Usamos refs para guardar valores sin renderizar de nuevo
     const targetY = useRef(0);  // Dónde está el ratón realmente
@@ -45,6 +45,16 @@ const Navigation = ({ isOpen, toggleMenu }) => {
 
     const [activeLink, setActiveLink] = useState('home');
     const [hoveredLink, setHoveredLink] = useState(null);
+
+    // Sync active link with current route
+    useEffect(() => {
+        const path = location.pathname;
+        if (path === '/') setActiveLink('home');
+        else if (path === '/career') setActiveLink('trayectoria');
+        else if (path === '/honors') setActiveLink('logros');
+        else if (path === '/calendar') setActiveLink('calendario');
+        else setActiveLink('');
+    }, [location]);
 
     // Determine which image should be highlighted
     const getHighlightClass = (linkName) => {
@@ -56,12 +66,9 @@ const Navigation = ({ isOpen, toggleMenu }) => {
         return activeLink === linkName ? 'highlight' : '';
     };
 
-    const handleLinkClick = (linkName, e) => {
-        // Prevent default only if we want to handle routing manually, 
-        // but for now we just update state. 
-        // e.preventDefault(); // Uncomment if using React Router or need to stop default
+    const handleLinkClick = (linkName) => {
         setActiveLink(linkName);
-        if (toggleMenu) toggleMenu(); // Optional: close menu on click
+        if (toggleMenu) toggleMenu();
     };
 
     useEffect(() => {
@@ -142,50 +149,50 @@ const Navigation = ({ isOpen, toggleMenu }) => {
                 <div className="nav-column right" >
                     {/* ... INSIDE RENDER ... */}
                     <div className={`nav-menu ${isOpen ? 'open' : ''}`}>
-                        <a href="#"
+                        <Link to="/"
                             className={`nav-link ${activeLink === 'home' ? 'active' : ''}`}
                             onMouseEnter={() => setHoveredLink('home')}
                             onMouseLeave={() => setHoveredLink(null)}
-                            onClick={(e) => handleLinkClick('home', e)}
+                            onClick={() => handleLinkClick('home')}
                         >
                             <RollingText text="HOME" />
                             <svg className="nav-line" width="100%" height="100%" viewBox="0 0 412 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" stroke-width="6" style={{ strokeDasharray: '433.208' }}></path>
+                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" strokeWidth="6" style={{ strokeDasharray: '433.208' }}></path>
                             </svg>
-                        </a>
-                        <a href="#"
+                        </Link>
+                        <Link to="/career"
                             className={`nav-link ${activeLink === 'trayectoria' ? 'active' : ''}`}
                             onMouseEnter={() => setHoveredLink('trayectoria')}
                             onMouseLeave={() => setHoveredLink(null)}
-                            onClick={(e) => handleLinkClick('trayectoria', e)}
+                            onClick={() => handleLinkClick('trayectoria')}
                         >
                             <RollingText text="TRAYECTORIA" />
                             <svg className="nav-line" width="100%" height="100%" viewBox="0 0 412 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" stroke-width="2.28" style={{ strokeDasharray: '433.208' }}></path>
+                                <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" strokeWidth="2.28" style={{ strokeDasharray: '433.208' }}></path>
                             </svg>
-                        </a>
-                        <a href="#"
+                        </Link>
+                        <Link to="/honors"
                             className={`nav-link ${activeLink === 'logros' ? 'active' : ''}`}
                             onMouseEnter={() => setHoveredLink('logros')}
                             onMouseLeave={() => setHoveredLink(null)}
-                            onClick={(e) => handleLinkClick('logros', e)}
+                            onClick={() => handleLinkClick('logros')}
                         >
                             <RollingText text="LOGROS" />
                             <svg className="nav-line" width="100%" height="100%" viewBox="0 0 412 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" strokeWidth="4" style={{ strokeDasharray: '433.208' }}></path>
                             </svg>
-                        </a>
-                        <a href="#"
+                        </Link>
+                        <Link to="/calendar"
                             className={`nav-link ${activeLink === 'calendario' ? 'active' : ''}`}
                             onMouseEnter={() => setHoveredLink('calendario')}
                             onMouseLeave={() => setHoveredLink(null)}
-                            onClick={(e) => handleLinkClick('calendario', e)}
+                            onClick={() => handleLinkClick('calendario')}
                         >
                             <RollingText text="CALENDARIO" />
                             <svg className="nav-line" width="100%" height="100%" viewBox="0 0 412 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 2h73.539c5.858 0 11.47 2.35 15.58 6.525l8.565 8.7a21.863 21.863 0 0 0 15.58 6.525h72.678c6.045 0 11.82-2.503 15.954-6.914l6.485-6.922A21.865 21.865 0 0 1 224.336 3h76.752a21.864 21.864 0 0 1 16.806 7.88l4.362 5.24A21.864 21.864 0 0 0 339.063 24H412" stroke="currentColor" strokeWidth="2.5" style={{ strokeDasharray: '433.208' }}></path>
                             </svg>
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="nav-footer-center">
