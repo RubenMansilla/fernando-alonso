@@ -53,6 +53,8 @@
     text-transform: uppercase;
     font-weight: 700;
     z-index: 10000;
+    width: fit-content;
+    white-space: nowrap;
     /* Above SVG */
 }
 

@@ -9,22 +9,42 @@ import './App.css'
 function App() {
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    const handleBreakpointChange = () => {
-      setIsLoading(true)
-    }
+    // Logic to reload page when switching between major breakpoints:
+    // Mobile (<500px) <-> Tablet (500px-799px) <-> Desktop (>=800px)
+    const desktopBreakpoint = window.matchMedia('(min-width: 800px)');
+    const tabletBreakpoint = window.matchMedia('(min-width: 500px)');
 
-    const mobileQuery = window.matchMedia('(max-width: 767px)')
-    const tabletQuery = window.matchMedia('(min-width: 768px) and (max-width: 1023px)')
-    const desktopQuery = window.matchMedia('(min-width: 1024px)')
+    const handleResize = () => {
+      // Reloading the page forces a full reset of React state and GSAP context
+      window.location.reload();
+    };
 
-    mobileQuery.addEventListener('change', handleBreakpointChange)
-    tabletQuery.addEventListener('change', handleBreakpointChange)
-    desktopQuery.addEventListener('change', handleBreakpointChange)
+    desktopBreakpoint.addEventListener('change', handleResize);
+    tabletBreakpoint.addEventListener('change', handleResize);
+
+    // Easter Egg in Console
+    console.log(
+      `%c
+   ███████╗███████╗██████╗ ███╗   ██╗ █████╗ ███╗   ██╗██████╗  ██████╗ 
+   ██╔════╝██╔════╝██╔══██╗████╗  ██║██╔══██╗████╗  ██║██╔══██╗██╔═══██╗
+   █████╗  █████╗  ██████╔╝██╔██╗ ██║███████║██╔██╗ ██║██║  ██║██║   ██║
+   ██╔══╝  ██╔══╝  ██╔══██╗██║╚██╗██║██╔══██║██║╚██╗██║██║  ██║██║   ██║
+   ██║     ███████╗██║  ██║██║ ╚████║██║  ██║██║ ╚████║██████╔╝╚██████╔╝
+   ╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝ 
+                                                                     
+    █████╗ ██╗      ██████╗ ███╗   ██╗███████╗ ██████╗                  
+   ██╔══██╗██║     ██╔═══██╗████╗  ██║██╔════╝██╔═══██╗                 
+   ███████║██║     ██║   ██║██╔██╗ ██║███████╗██║   ██║                 
+   ██╔══██║██║     ██║   ██║██║╚██╗██║╚════██║██║   ██║                 
+   ██║  ██║███████╗╚██████╔╝██║ ╚████║███████║╚██████╔╝                 
+   ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝ ╚═════╝                  
+      `,
+      'color: #2c8ecc; font-weight: bold;'
+    );
 
     return () => {
-      mobileQuery.removeEventListener('change', handleBreakpointChange)
-      tabletQuery.removeEventListener('change', handleBreakpointChange)
-      desktopQuery.removeEventListener('change', handleBreakpointChange)
+      desktopBreakpoint.removeEventListener('change', handleResize);
+      tabletBreakpoint.removeEventListener('change', handleResize);
     }
   }, [])
 
