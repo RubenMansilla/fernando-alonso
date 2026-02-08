@@ -41,7 +41,7 @@ export function TrackDisplay3D({ meshName }) {
         box.getSize(size);
         const maxDim = Math.max(size.x, size.y, size.z);
         const scale = maxDim > 0 ? 6 / maxDim : 1;
-        const gapY = 0.07;
+        const gapY = 0.05;
         const outerScale = 1.06;   // cuánto “rodean” por fuera (1.03 - 1.09)
         const outerAlpha = 0.18;    // fuerza del aro exterior (0.10 - 0.28)
         const outerGlowAlpha = 0.08; // halo
@@ -128,11 +128,52 @@ export function TrackDisplay3D({ meshName }) {
 
 
         // ---------------- PARED SÓLIDA ENTRE FRONT Y BACK ----------------
-        // thickness en unidades LOCALES (luego escalas todo con scale)
-        const thicknessLocal = gapY;
+        // Generar geometría custom conectando los edges de arriba con los de abajo
+        const wallGeometry = new THREE.BufferGeometry();
+        const edgePos = edges.attributes.position.array;
+        const wallVertices = [];
+        // La "profundidad" de la pared es gapY * scale (lo mismo que baja el backCore)
+        const wallDepth = gapY;
 
-        // ✅ “volumen” del circuito: top/bottom + laterales en el períme
+        for (let i = 0; i < edgePos.length; i += 6) {
+            // Puntos del segmento superior (original)
+            const x1 = edgePos[i], y1 = edgePos[i + 1], z1 = edgePos[i + 2];
+            const x2 = edgePos[i + 3], y2 = edgePos[i + 4], z2 = edgePos[i + 5];
 
+
+            // Triángulo 1
+            // Top1, Bottom1, Top2
+            wallVertices.push(
+                x1, y1, z1,                 // Top1
+                x1, y1 + wallDepth, z1,     // Bottom1 extended
+                x2, y2, z2                  // Top2
+            );
+
+            // Triángulo 2
+            // Bottom1, Bottom2, Top2
+            wallVertices.push(
+                x1, y1 + wallDepth, z1,     // Bottom1 extended
+                x2, y2 + wallDepth, z2,     // Bottom2 extended
+                x2, y2, z2                  // Top2
+            );
+        }
+
+        wallGeometry.setAttribute('position', new THREE.Float32BufferAttribute(wallVertices, 3));
+        wallGeometry.computeVertexNormals();
+
+        const solidWallMat = new THREE.MeshBasicMaterial({
+            color: "#caff00",
+            transparent: false,
+            opacity: 0.8,
+            side: THREE.DoubleSide,
+            depthWrite: true,
+            depthTest: true,
+        });
+
+        const solidWallMesh = new THREE.Mesh(wallGeometry, solidWallMat);
+        // El wallGeometry ya tiene el shift aplicado en sus vértices de "abajo", 
+        // así que el mesh va en la misma posición que el front (0,0,0) relativo al grupo
+        solidWallMesh.scale.setScalar(scale);
 
         // ---- DOUBLE STROKE (micro capas) ----
         // escalas pequeñas para simular doble línea exterior sin deformaciones raras
@@ -193,6 +234,7 @@ export function TrackDisplay3D({ meshName }) {
         hitMeshBack.scale.setScalar(scale * 1.02); // igual que backCore
         hitMeshBack.position.y = yBack; // misma altura que backCore/backStack
 
+
         const makeThickEdges = (edgesGeom, color, linewidth, opacity) => {
             // edgesGeom es EdgesGeometry (BufferGeometry)
             const pos = edgesGeom.attributes.position.array;
@@ -226,6 +268,9 @@ export function TrackDisplay3D({ meshName }) {
         // Grupo final (ligera inclinación si quieres)
         setElement(
             <group>
+                {/* Wall Solida */}
+                <primitive object={solidWallMesh} />
+
                 {/* BACK (outline + doble stroke + líneas) */}
                 <Select enabled>
                     <primitive object={hitMeshBack} />
@@ -261,9 +306,11 @@ export function TrackDisplay3D({ meshName }) {
         return () => {
             geometry.dispose?.();
             edges.dispose?.();
+            wallGeometry.dispose?.();
             coreMat.dispose?.();
             glowMat.dispose?.();
             wallMat.dispose?.();
+            solidWallMat.dispose?.();
             backCoreMat.dispose?.();
             strokeMats.forEach(m => m.dispose?.());
 
@@ -311,12 +358,7 @@ export function TrackDisplay3D({ meshName }) {
                         hiddenEdgeColor={0x0b0f0c}
                         width={1800}
                     />
-                    <Bloom
-                        intensity={2.2}
-                        luminanceThreshold={0.0}
-                        luminanceSmoothing={0.2}
-                        mipmapBlur
-                    />
+
                     <Vignette eskil={false} offset={0.2} darkness={0.7} />
                 </EffectComposer>
             </Selection>
