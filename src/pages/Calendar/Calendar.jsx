@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import Rive from "@rive-app/react-canvas";
 import "./Calendar.css";
 import { CIRCUIT_COUNTRY } from "../../components/Circuits/circuitMapping";
 
@@ -109,6 +110,7 @@ const FLAGS = {
 
 export default function Calendar() {
     const [isHoveringRow, setIsHoveringRow] = useState(false);
+    const [hoveredCircuit, setHoveredCircuit] = useState(null); // Track hovered circuit key
 
     const overlayRef = useRef(null);
     const rafRef = useRef(null);
@@ -185,8 +187,21 @@ export default function Calendar() {
                             draggable="false"
                         />
 
+                        {/* RIVE ANIMATION */}
+                        {hoveredCircuit && (
+                            <div className="calendar-hover-rive-container">
+                                <Rive
+                                    key={hoveredCircuit}
+                                    src="/rive/circuits.riv"
+                                    artboard="circuits"
+                                    animations={["color_black", "rotations", hoveredCircuit]}
+                                    autoplay={true}
+                                />
+                            </div>
+                        )}
+
                         {/* TEXTO ENCIMA DEL HUECO */}
-                        <span className="hover-circuit-label">CIRCUITo</span>
+                        <span className="hover-circuit-label">CIRCUITO</span>
                     </div>
                 </div>
 
@@ -222,8 +237,14 @@ export default function Calendar() {
                                 className="calendar-grid calendar-row"
                                 role="row"
                                 key={race.round}
-                                onMouseEnter={() => setIsHoveringRow(true)}
-                                onMouseLeave={() => setIsHoveringRow(false)}
+                                onMouseEnter={() => {
+                                    setIsHoveringRow(true);
+                                    setHoveredCircuit(key);
+                                }}
+                                onMouseLeave={() => {
+                                    setIsHoveringRow(false);
+                                    setHoveredCircuit(null);
+                                }}
                             >
                                 <div className="cell cell-round" role="cell">
                                     {race.round}

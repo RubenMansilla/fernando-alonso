@@ -45,6 +45,7 @@
     text-transform: uppercase;
     font-size: 60px;
     line-height: 0.93;
+    cursor: pointer;
 }
 
 /* ✅ LA CLAVE: una sola grid-template-columns para header + filas */
@@ -161,12 +162,23 @@
     position: absolute;
     top: 0px;
     left: 0px;
-    /* ajusta fino */
     font-family: "Mona Sans Variable", Arial, sans-serif;
     font-size: 9px;
-    color: #c3c3c3;
-    /* suele ser oscuro sobre el amarillo */
-    font-weight: 600;
+    color: #d0d0d0;
+    font-weight: 700;
     text-transform: uppercase;
     pointer-events: none;
+    letter-spacing: 0.5px;
+}
+
+/* RIVE CONTAINER */
+.calendar-hover-rive-container {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%) scaleX(-1);
+    width: 160px;
+    height: 160px;
+    pointer-events: none;
+    z-index: 10;
 }
