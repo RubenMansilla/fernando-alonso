@@ -135,14 +135,13 @@ export default function Calendar() {
         const rect = el.getBoundingClientRect();
         const pad = 12;
 
-        // clamp para que no se salga de la pantalla
-        const x = clamp(current.current.x, pad, window.innerWidth - rect.width - pad);
-        const y = clamp(current.current.y, pad, window.innerHeight - rect.height - pad);
+        const x = current.current.x;
+        const y = current.current.y;
 
         el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-
         rafRef.current = requestAnimationFrame(tick);
     };
+
 
     useEffect(() => {
         if (!isHoveringRow) {
@@ -209,19 +208,19 @@ export default function Calendar() {
                 {/* Header */}
                 <div className="calendar-grid calendar-header" role="row">
                     <div className="cell cell-round" role="columnheader">
-                        ROUND
+                        RONDA
                     </div>
                     <div className="cell cell-location" role="columnheader">
-                        LOCATION
+                        UBICACIÓN
                     </div>
                     <div className="cell cell-when" role="columnheader">
-                        WHEN
+                        CUANDO
                     </div>
                     <div className="cell cell-laps" role="columnheader">
-                        LAPS
+                        VUELTAS
                     </div>
                     <div className="cell cell-distance" role="columnheader">
-                        DISTANCE
+                        DISTANCIA
                     </div>
                 </div>
 
