@@ -13,6 +13,29 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@font-face {
+  font-family: "Mona Sans Variable";
+  src: url("/fonts/MonaSans-VariableFont_wdth,wght.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --min-width: 992px;
+  --max-width: 1920px;
+  --design-width: 1728;
+  --design-unit: 16;
+  --scale-factor: 1;
+  --fluid-container: clamp(var(--min-width), 100vw, var(--max-width));
+  --fluid-font: calc(var(--fluid-container) / var(--design-width) * var(--design-unit) * var(--scale-factor));
+}
+
+html {
+  font-size: var(--fluid-font);
+}
+
+
 * {
   margin: 0;
   padding: 0;

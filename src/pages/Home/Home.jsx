@@ -282,8 +282,6 @@ const Home = () => {
                     transform: 'translate(-50%, -50%)',
                     zIndex: 2,
                     overflow: 'hidden',
-                    // Force initial state to clear any lingering styles?
-                    // No, keeping it 100% full screen initially
                 }}>
                     <HeroCard ref={heroLogicRef} />
                 </div>

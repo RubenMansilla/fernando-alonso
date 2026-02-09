@@ -25,6 +25,33 @@ export const CIRCUIT_MESH_MAP = {
     "zandvoort": "mesh024",
 };
 
+export const CIRCUIT_COUNTRY = {
+    "yas-marina": "ABU DABI",
+    "melbourne": "AUSTRALIA",
+    "speilberg": "AUSTRIA",
+    "baku": "AZERBAIJAN",
+    "sakhir": "BAHREIN",
+    "spa-francorchamps": "BÉLGICA",
+    "sao-paulo": "BRASIL",
+    "montreal": "CANADÁ",
+    "shanghai": "CHINA",
+    "imola": "ITALIA",
+    "silverstone": "REINO UNIDO",
+    "mogyorod": "HUNGRÍA",
+    "monza": "ITALIA",
+    "suzuka": "JAPÓN",
+    "las-vegas": "LAS VEGAS",
+    "mexico-city": "MÉXICO",
+    "miami": "MIAMI",
+    "monaco": "MÓNACO",
+    "lusail": "QATAR",
+    "jeddah": "ARABIA SAUDITA",
+    "singapore": "SINGAPUR",
+    "barcelona": "ESPAÑA",
+    "austin": "ESTADOS UNIDOS",
+    "zandvoort": "PAÍSES BAJOS",
+};
+
 export const CIRCUIT_ORDER = [
     "yas-marina", "lusail", "las-vegas", "sao-paulo", "mexico-city", "austin",
     "singapore", "baku", "monza", "zandvoort", "mogyorod", "spa-francorchamps",

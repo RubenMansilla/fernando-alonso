@@ -1,0 +1,172 @@
+@font-face {
+    font-family: "Mona Sans Variable";
+    src: url("/fonts/MonaSans-VariableFont_wdth,wght.woff2") format("woff2");
+    font-weight: 200 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --gap-round-location: 34px;
+    --gap-when-laps: 80px;
+
+    /* antes: 96px fijo */
+    --right-gutter: clamp(12px, 5vw, 96px);
+}
+
+.calendar-page {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #0e0e0e;
+    padding: 40px 0px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.calendar-container {
+    width: 100%;
+    position: relative;
+}
+
+/* Tipografía grande igual que tu tabla */
+.calendar-body,
+.calendar-header {
+    color: #f4f4ed;
+    font-family: "Mona Sans Variable", Arial, sans-serif;
+    font-variation-settings: "wght" 700, "wdth" 75;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 60px;
+    line-height: 0.93;
+}
+
+/* ✅ LA CLAVE: una sola grid-template-columns para header + filas */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: 14% 36% 24% 14% 12%;
+    align-items: center;
+}
+
+/* Header */
+.calendar-header {
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 0 0 50px 0;
+}
+
+/* Body rows */
+.calendar-row {
+    border-bottom: 1px solid #222;
+    padding: 8px 0;
+    transition: background-color 0.2s ease;
+}
+
+.calendar-row:hover {
+    background-color: #282c20;
+}
+
+.cell {
+    white-space: nowrap;
+}
+
+/* DISTANCE alineado a la derecha con gutter */
+.cell-distance {
+    padding-right: var(--right-gutter);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.calendar-row .cell-distance {
+    font-size: 30px;
+}
+
+/* Round / When / Laps line-height */
+.cell-round,
+.cell-when,
+.cell-laps {
+    line-height: 1;
+}
+
+.cell-round {
+    margin-left: 20px;
+}
+
+/* Flag */
+.flag-icon {
+    width: 30px;
+    height: auto;
+    margin-left: 12px;
+    vertical-align: top;
+    margin-top: 5px;
+}
+
+/* unit */
+.cell-distance .unit {
+    font-size: 14px;
+    color: #b9bbad;
+    margin-left: 4px;
+    text-transform: uppercase;
+    font-family: "Mona Sans Variable", Arial, sans-serif;
+    font-variation-settings: "wght" 800, "wdth" 87.5;
+    font-weight: 900;
+}
+
+/* ========================================================= */
+/* ✅ HOVER SVG OVERLAY (flotante, encima de toda la tabla)   */
+/* ========================================================= */
+
+.calendar-hover-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+
+    pointer-events: none;
+    /* para que NO bloquee el hover de las filas */
+    opacity: 0;
+    transform: translate3d(-9999px, -9999px, 0);
+    transition: opacity 120ms ease;
+    will-change: transform, opacity;
+}
+
+.calendar-hover-overlay.is-visible {
+    opacity: 1;
+}
+
+/* Contenedor de la tarjeta (SVG + texto) */
+.hover-circuit-card {
+    position: relative;
+    display: inline-block;
+}
+
+/* Tu SVG */
+.calendar-hover-overlay-img {
+    width: min(240px, 60vw);
+    height: auto;
+    display: block;
+    user-select: none;
+}
+
+/* TEXTO EN EL HUECO SUPERIOR IZQUIERDO */
+.hover-circuit-label {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    /* ajusta fino */
+    font-family: "Mona Sans Variable", Arial, sans-serif;
+    font-size: 9px;
+    color: #c3c3c3;
+    /* suele ser oscuro sobre el amarillo */
+    font-weight: 600;
+    text-transform: uppercase;
+    pointer-events: none;
+}
