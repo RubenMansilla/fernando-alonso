@@ -402,12 +402,11 @@ export function TrackDisplay3D({ meshName }) {
     return (
         <Canvas
             style={{ width: "100%", height: "100%" }}
-            gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+            gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
             dpr={[1, 2]}
         >
             <Selection>
-                <color attach="background" args={["#0b0f0c"]} />
-                <fog attach="fog" args={["#0b0f0c", 6, 18]} />
+
 
                 <OrthographicCamera makeDefault position={[6, 6, 6]} zoom={120} near={-100} far={100} />
 
@@ -419,7 +418,7 @@ export function TrackDisplay3D({ meshName }) {
                 <OrbitControls
                     autoRotate
                     autoRotateSpeed={0.25}
-                    enableZoom
+                    enableZoom={false}
                     enablePan={false}
                     minPolarAngle={0.2}
                     maxPolarAngle={Math.PI / 2}

@@ -30,26 +30,6 @@ function AppContent() {
     desktopBreakpoint.addEventListener('change', handleResize);
     tabletBreakpoint.addEventListener('change', handleResize);
 
-    // Easter Egg in Console
-    console.log(
-      `%c
-   ███████╗███████╗██████╗ ███╗   ██╗ █████╗ ███╗   ██╗██████╗  ██████╗ 
-   ██╔════╝██╔════╝██╔══██╗████╗  ██║██╔══██╗████╗  ██║██╔══██╗██╔═══██╗
-   █████╗  █████╗  ██████╔╝██╔██╗ ██║███████║██╔██╗ ██║██║  ██║██║   ██║
-   ██╔══╝  ██╔══╝  ██╔══██╗██║╚██╗██║██╔══██║██║╚██╗██║██║  ██║██║   ██║
-   ██║     ███████╗██║  ██║██║ ╚████║██║  ██║██║ ╚████║██████╔╝╚██████╔╝
-   ╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝ 
-                                                                     
-    █████╗ ██╗      ██████╗ ███╗   ██╗███████╗ ██████╗                  
-   ██╔══██╗██║     ██╔═══██╗████╗  ██║██╔════╝██╔═══██╗                 
-   ███████║██║     ██║   ██║██╔██╗ ██║███████╗██║   ██║                 
-   ██╔══██║██║     ██║   ██║██║╚██╗██║╚════██║██║   ██║                 
-   ██║  ██║███████╗╚██████╔╝██║ ╚████║███████║╚██████╔╝                 
-   ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝ ╚═════╝                  
-      `,
-      'color: #2c8ecc; font-weight: bold;'
-    );
-
     return () => {
       desktopBreakpoint.removeEventListener('change', handleResize);
       tabletBreakpoint.removeEventListener('change', handleResize);
@@ -61,7 +41,7 @@ function AppContent() {
       {isLoading && <LoadingScreen onLoadComplete={() => setIsLoading(false)} />}
       <CustomScrollbar />
       <Header />
-      <AnimatedBackground />
+      {location.pathname === '/' && <AnimatedBackground />}
 
       <Routes>
         <Route path="/" element={<Home />} />

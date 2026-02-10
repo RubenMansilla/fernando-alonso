@@ -1,275 +1,90 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import Rive from "@rive-app/react-canvas";
+import React, { useState, useEffect } from "react";
 import "./Calendar.css";
-import { CIRCUIT_COUNTRY } from "../../components/Circuits/circuitMapping";
+import CalendarTable from "../../components/CalendarTable/CalendarTable";
+import { TrackDisplay3D } from "../../components/Circuits/TrackDisplay3D";
+import { CIRCUIT_MESH_MAP } from "../../components/Circuits/circuitMapping";
+import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { calendarSourceData, LOCATION_TO_KEY } from "../../data/calendarData";
 
-// ✅ Hover SVG overlay
-import listTrackBg from "../../assets/placeholder/list-track-bg.svg";
-
-// Import flags
-import flagAbuDabi from "../../assets/flags/flag-Abu-Dabi.svg";
-import flagAustralia from "../../assets/flags/flag-Australia.svg";
-import flagAustria from "../../assets/flags/flag-Austria.svg";
-import flagAzerbaijan from "../../assets/flags/flag-Azerbaijan.svg";
-import flagBahrain from "../../assets/flags/flag-Bahrain.svg";
-import flagBelgium from "../../assets/flags/flag-Belgium.svg";
-import flagBrazil from "../../assets/flags/flag-Brazil.png";
-import flagCanada from "../../assets/flags/flag-Canada.svg";
-import flagChina from "../../assets/flags/flag-China.svg";
-import flagHungary from "../../assets/flags/flag-Hungary.svg";
-import flagItaly from "../../assets/flags/flag-Italy.svg";
-import flagJapan from "../../assets/flags/flag-Japan.svg";
-import flagMexico from "../../assets/flags/flag-Mexico.png";
-import flagMonaco from "../../assets/flags/flag-Monaco.svg";
-import flagNetherlands from "../../assets/flags/flag-Netherlands.svg";
-import flagQatar from "../../assets/flags/flag-Qatar.svg";
-import flagSaudiArabia from "../../assets/flags/flag-Saudi-Arabia.svg";
-import flagSingapore from "../../assets/flags/flag-Singapore.svg";
-import flagSpain from "../../assets/flags/flag-Spain.png";
-import flagUK from "../../assets/flags/flag-UK.svg";
-import flagUSA from "../../assets/flags/flag-USA.svg";
-
-const calendarSourceData = [
-    { round: "01", location: "Australia", dates: "06-08 Mar", laps: 58, distance: "306.124" },
-    { round: "02", location: "China", dates: "13-15 Mar", laps: 56, distance: "305.256" },
-    { round: "03", location: "Japan", dates: "27-29 Mar", laps: 53, distance: "307.771" },
-    { round: "04", location: "Bahrain", dates: "10-12 Apr", laps: 57, distance: "308.484" },
-    { round: "05", location: "Saudi Arabia", dates: "17-19 Apr", laps: 50, distance: "308.700" },
-    { round: "06", location: "Miami", dates: "01-03 May", laps: 57, distance: "308.484" },
-    { round: "07", location: "Canada", dates: "22-24 May", laps: 70, distance: "305.270" },
-    { round: "08", location: "Monaco", dates: "05-07 Jun", laps: 78, distance: "260.286" },
-    { round: "09", location: "Spain", dates: "12-14 Jun", laps: 66, distance: "307.362" },
-    { round: "10", location: "Austria", dates: "26-28 Jun", laps: 71, distance: "306.578" },
-    { round: "11", location: "United Kingdom", dates: "03-05 Jul", laps: 52, distance: "306.332" },
-    { round: "12", location: "Belgium", dates: "17-19 Jul", laps: 44, distance: "308.176" },
-    { round: "13", location: "Hungary", dates: "24-26 Jul", laps: 70, distance: "306.670" },
-    { round: "14", location: "Netherlands", dates: "21-23 Aug", laps: 72, distance: "306.648" },
-    { round: "15", location: "Italy", dates: "04-06 Sep", laps: 53, distance: "307.029" },
-    { round: "16", location: "Spain", dates: "11-13 Sep", laps: 57, distance: "312.018" },
-    { round: "17", location: "Azerbaijan", dates: "24-26 Sep", laps: 51, distance: "306.153" },
-    { round: "18", location: "Singapore", dates: "09-11 Oct", laps: 62, distance: "306.280" },
-    { round: "19", location: "United States", dates: "23-25 Oct", laps: 56, distance: "308.728" },
-    { round: "20", location: "Mexico", dates: "30-01 Nov", laps: 71, distance: "305.584" },
-    { round: "21", location: "Brazil", dates: "06-08 Nov", laps: 71, distance: "305.939" },
-    { round: "22", location: "Las Vegas", dates: "19-21 Nov", laps: 50, distance: "310.050" },
-    { round: "23", location: "Qatar", dates: "27-29 Nov", laps: 57, distance: "308.883" },
-    { round: "24", location: "Abu Dhabi", dates: "04-06 Dec", laps: 58, distance: "306.298" },
-];
-
-const LOCATION_TO_KEY = {
-    Australia: "melbourne",
-    China: "shanghai",
-    Japan: "suzuka",
-    Bahrain: "sakhir",
-    "Saudi Arabia": "jeddah",
-    Miami: "miami",
-    Canada: "montreal",
-    Monaco: "monaco",
-    Spain: "barcelona",
-    Austria: "speilberg",
-    "United Kingdom": "silverstone",
-    Belgium: "spa-francorchamps",
-    Hungary: "mogyorod",
-    Netherlands: "zandvoort",
-    Italy: "monza",
-    Azerbaijan: "baku",
-    Singapore: "singapore",
-    "United States": "austin",
-    Mexico: "mexico-city",
-    Brazil: "sao-paulo",
-    "Las Vegas": "las-vegas",
-    Qatar: "lusail",
-    "Abu Dhabi": "yas-marina",
-};
-
-const FLAGS = {
-    melbourne: flagAustralia,
-    shanghai: flagChina,
-    suzuka: flagJapan,
-    sakhir: flagBahrain,
-    jeddah: flagSaudiArabia,
-    miami: flagUSA,
-    montreal: flagCanada,
-    monaco: flagMonaco,
-    barcelona: flagSpain,
-    speilberg: flagAustria,
-    silverstone: flagUK,
-    "spa-francorchamps": flagBelgium,
-    mogyorod: flagHungary,
-    zandvoort: flagNetherlands,
-    monza: flagItaly,
-    baku: flagAzerbaijan,
-    singapore: flagSingapore,
-    austin: flagUSA,
-    "mexico-city": flagMexico,
-    "sao-paulo": flagBrazil,
-    "las-vegas": flagUSA,
-    lusail: flagQatar,
-    "yas-marina": flagAbuDabi,
-};
+gsap.registerPlugin(ScrollToPlugin);
 
 export default function Calendar() {
-    const [isHoveringRow, setIsHoveringRow] = useState(false);
-    const [hoveredCircuit, setHoveredCircuit] = useState(null); // Track hovered circuit key
-
-    const overlayRef = useRef(null);
-    const rafRef = useRef(null);
-
-    // posición objetivo (ratón) y posición actual (inercia)
-    const target = useRef({ x: 0, y: 0 });
-    const current = useRef({ x: 0, y: 0 });
-
-    const OFFSET_X = 26; // a la derecha del ratón
-    const OFFSET_Y = -22; // un poco arriba para que no tape el puntero
-
-    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-
-    const tick = () => {
-        const el = overlayRef.current;
-        if (!el) return;
-
-        // inercia suave
-        current.current.x += (target.current.x - current.current.x) * 0.15;
-        current.current.y += (target.current.y - current.current.y) * 0.15;
-
-        const rect = el.getBoundingClientRect();
-        const pad = 12;
-
-        const x = current.current.x;
-        const y = current.current.y;
-
-        el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-        rafRef.current = requestAnimationFrame(tick);
-    };
-
+    const [selectedCircuit, setSelectedCircuit] = useState(null);
+    const visualizerRef = React.useRef(null);
+    const hasScrolledRef = React.useRef(false); // Ref to track if we've already done the initial scroll
 
     useEffect(() => {
-        if (!isHoveringRow) {
-            // al salir del hover, paramos raf (y se ocultará por css)
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            rafRef.current = null;
-            return;
-        }
-
-        // arrancar animación si entramos en hover
-        if (!rafRef.current) {
-            rafRef.current = requestAnimationFrame(tick);
-        }
-
-        return () => {
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            rafRef.current = null;
+        // Find next race
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const monthMap = {
+            "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5,
+            "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isHoveringRow]);
 
-    const handleMouseMove = (e) => {
-        // solo seguimos el ratón cuando se está haciendo hover en una row
-        if (!isHoveringRow) return;
-        target.current.x = e.clientX + OFFSET_X;
-        target.current.y = e.clientY + OFFSET_Y;
+        const nextRace = calendarSourceData.find(race => {
+            // race.dates format: "06-08 Mar"
+            // We want the END date of the weekend "08 Mar" to see if it has passed
+            const parts = race.dates.split(" ");
+            if (parts.length < 2) return false;
+
+            const dayRange = parts[0]; // "06-08"
+            const monthStr = parts[1]; // "Mar"
+
+            const days = dayRange.split("-");
+            const endDay = parseInt(days[days.length - 1], 10);
+            const month = monthMap[monthStr];
+
+            // Setup date object for the end of the race weekend
+            const raceDate = new Date(currentYear, month, endDay);
+            // Add one day to be safe (ensure "today" allows seeing the race on the race day itself)
+            raceDate.setHours(23, 59, 59, 999);
+
+            return raceDate >= today;
+        });
+
+        if (nextRace) {
+            const key = LOCATION_TO_KEY[nextRace.location];
+            setSelectedCircuit(key);
+            // Note: We intentionally DO NOT scroll automatically on load, as it might be annoying.
+            // But if the user requested "the following race... and active", we set the state.
+        } else {
+            // If season finished, maybe select the last one or first one? Default to first for next year or None.
+            // setSelectedCircuit(null);
+        }
+
+    }, []);
+
+    const handleCircuitSelect = (key) => {
+        setSelectedCircuit(key);
+        if (visualizerRef.current) {
+            // Scroll to the visualizer with a slower duration (e.g., 1.5 seconds)
+            gsap.to(window, {
+                duration: 1.5,
+                scrollTo: {
+                    y: visualizerRef.current,
+                    offsetY: window.innerHeight / 2 - visualizerRef.current.offsetHeight / 2
+                },
+                ease: "power2.inOut"
+            });
+        }
     };
 
     return (
-        <div className="calendar-page" onMouseMove={handleMouseMove}>
-            <div className="calendar-container">
-                <div
-                    ref={overlayRef}
-                    className={`calendar-hover-overlay ${isHoveringRow ? "is-visible" : ""}`}
-                    aria-hidden="true"
-                >
-                    <div className="hover-circuit-card">
-                        <img
-                            src={listTrackBg}
-                            alt=""
-                            className="calendar-hover-overlay-img"
-                            draggable="false"
-                        />
-
-                        {/* RIVE ANIMATION */}
-                        {hoveredCircuit && (
-                            <div className="calendar-hover-rive-container">
-                                <Rive
-                                    key={hoveredCircuit}
-                                    src="/rive/circuits.riv"
-                                    artboard="circuits"
-                                    animations={["color_black", "rotations", hoveredCircuit]}
-                                    autoplay={true}
-                                />
-                            </div>
-                        )}
-
-                        {/* TEXTO ENCIMA DEL HUECO */}
-                        <span className="hover-circuit-label">CIRCUITO</span>
+        <div className="calendar-page">
+            <div className="calendar-hero"></div>
+            <div className="track-visualizer" ref={visualizerRef}>
+                {selectedCircuit && CIRCUIT_MESH_MAP[selectedCircuit] ? (
+                    <TrackDisplay3D meshName={CIRCUIT_MESH_MAP[selectedCircuit]} />
+                ) : (
+                    <div className="track-placeholder">
+                        <p>SELECT A GP TO VIEW TRACK</p>
                     </div>
-                </div>
-
-
-                {/* Header */}
-                <div className="calendar-grid calendar-header" role="row">
-                    <div className="cell cell-round" role="columnheader">
-                        RONDA
-                    </div>
-                    <div className="cell cell-location" role="columnheader">
-                        UBICACIÓN
-                    </div>
-                    <div className="cell cell-when" role="columnheader">
-                        CUANDO
-                    </div>
-                    <div className="cell cell-laps" role="columnheader">
-                        VUELTAS
-                    </div>
-                    <div className="cell cell-distance" role="columnheader">
-                        DISTANCIA
-                    </div>
-                </div>
-
-                {/* Rows */}
-                <div className="calendar-body" role="rowgroup">
-                    {calendarSourceData.map((race) => {
-                        const key = LOCATION_TO_KEY[race.location];
-                        const displayName = key && CIRCUIT_COUNTRY[key] ? CIRCUIT_COUNTRY[key] : race.location;
-                        const flagSrc = key && FLAGS[key] ? FLAGS[key] : null;
-
-                        return (
-                            <div
-                                className="calendar-grid calendar-row"
-                                role="row"
-                                key={race.round}
-                                onMouseEnter={() => {
-                                    setIsHoveringRow(true);
-                                    setHoveredCircuit(key);
-                                }}
-                                onMouseLeave={() => {
-                                    setIsHoveringRow(false);
-                                    setHoveredCircuit(null);
-                                }}
-                            >
-                                <div className="cell cell-round" role="cell">
-                                    {race.round}
-                                </div>
-
-                                <div className="cell cell-location" role="cell">
-                                    {displayName}
-                                    {flagSrc && <img src={flagSrc} alt={`${race.location} flag`} className="flag-icon" />}
-                                </div>
-
-                                <div className="cell cell-when" role="cell">
-                                    {race.dates.toUpperCase()}
-                                </div>
-                                <div className="cell cell-laps" role="cell">
-                                    {race.laps}
-                                </div>
-
-                                <div className="cell cell-distance" role="cell">
-                                    {race.distance}
-                                    <span className="unit">KM</span>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                )}
             </div>
+            <CalendarTable onCircuitSelect={handleCircuitSelect} selectedCircuit={selectedCircuit} />
+            <div className="calendar-hero"></div>
         </div>
     );
 }

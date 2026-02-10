@@ -15,185 +15,45 @@
 :root {
     --gap-round-location: 34px;
     --gap-when-laps: 80px;
-
-    /* antes: 96px fijo */
     --right-gutter: clamp(12px, 5vw, 96px);
 }
 
 .calendar-page {
     width: 100%;
-    min-height: 100vh;
-    background-color: #0e0e0e;
-    padding: 40px 0px;
+    background-color: #111112;
     display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 100vh;
+}
+
+.calendar-hero {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 120vh;
+    background-color: rgb(186, 186, 186);
+}
+
+.track-visualizer {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
     justify-content: center;
     position: relative;
+    overflow: hidden;
+    background-color: #111112;
+    /* Matches TrackDisplay3D background */
 }
 
-.calendar-container {
+.track-placeholder {
     width: 100%;
-    position: relative;
-}
-
-/* Tipografía grande igual que tu tabla */
-.calendar-body,
-.calendar-header {
-    color: #f4f4ed;
-    font-family: "Mona Sans Variable", Arial, sans-serif;
-    font-variation-settings: "wght" 700, "wdth" 75;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 60px;
-    line-height: 0.93;
-    cursor: pointer;
-}
-
-/* ✅ LA CLAVE: una sola grid-template-columns para header + filas */
-.calendar-grid {
-    display: grid;
-    grid-template-columns: 14% 36% 24% 14% 12%;
+    height: 100%;
+    display: flex;
     align-items: center;
-}
-
-/* Header */
-.calendar-header {
-    font-size: 0.75rem;
-    color: #888;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    padding: 0 0 40px 0;
-}
-
-/* Body rows */
-.calendar-row {
-    border-bottom: 1px solid #222;
-    padding: 8px 0;
-    transition: background-color 0.2s ease;
-}
-
-.calendar-row:hover {
-    background-color: #282c20;
-}
-
-.cell {
-    white-space: nowrap;
-}
-
-/* DISTANCE alineado a la derecha con gutter */
-.cell-distance {
-    padding-right: var(--right-gutter);
-    font-weight: 700;
-    line-height: 1;
-}
-
-.calendar-row .cell-distance {
-    font-size: 30px;
-}
-
-/* Round / When / Laps line-height */
-.cell-round,
-.cell-when,
-.cell-laps {
-    line-height: 1;
-}
-
-.cell-round {
-    margin-left: 20px;
-}
-
-/* Flag */
-.flag-icon {
-    width: 30px;
-    height: auto;
-    margin-left: 12px;
-    vertical-align: top;
-    margin-top: 5px;
-}
-
-/* unit */
-.cell-distance .unit {
-    font-size: 14px;
-    color: #b9bbad;
-    margin-left: 4px;
-    text-transform: uppercase;
-    font-family: "Mona Sans Variable", Arial, sans-serif;
-    font-variation-settings: "wght" 800, "wdth" 87.5;
-    font-weight: 900;
-}
-
-/* ========================================================= */
-/* ✅ HOVER SVG OVERLAY (flotante, encima de toda la tabla)   */
-/* ========================================================= */
-
-.calendar-hover-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 9999;
-
-    /* para que NO bloquee el hover de las filas */
-    opacity: 0;
-    transform: translate3d(-9999px, -9999px, 0);
-
-    /* CLOSED STATE: hidden via opacity + clip-path at 0 */
-    clip-path: ellipse(150% 0% at 50% 0);
-
-    /* CLOSING: Blind pulling up */
-    transition:
-        opacity 0.2s ease 0.4s,
-        /* Fade out AFTER it closes */
-        clip-path 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-    /* Pull up */
-
-    will-change: transform, opacity, clip-path;
-}
-
-.calendar-hover-overlay.is-visible {
-    opacity: 1;
-    clip-path: ellipse(150% 220% at 50% 0);
-
-    /* OPENING: Curtain reveal animation */
-    transition:
-        opacity 0s linear,
-        clip-path 1.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-
-/* Contenedor de la tarjeta (SVG + texto) */
-.hover-circuit-card {
-    position: relative;
-    display: inline-block;
-}
-
-/* Tu SVG */
-.calendar-hover-overlay-img {
-    width: min(240px, 60vw);
-    height: auto;
-    display: block;
-    user-select: none;
-}
-
-/* TEXTO EN EL HUECO SUPERIOR IZQUIERDO */
-.hover-circuit-label {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    font-family: "Mona Sans Variable", Arial, sans-serif;
-    font-size: 9px;
-    color: #d0d0d0;
-    font-weight: 700;
-    text-transform: uppercase;
-    pointer-events: none;
-    letter-spacing: 0.5px;
-}
-
-/* RIVE CONTAINER */
-.calendar-hover-rive-container {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%) scaleX(-1);
-    width: 160px;
-    height: 160px;
-    pointer-events: none;
-    z-index: 10;
+    justify-content: center;
+    color: #444;
+    font-size: 1.5rem;
+    font-family: "Mona Sans Variable", sans-serif;
+    letter-spacing: 2px;
 }
