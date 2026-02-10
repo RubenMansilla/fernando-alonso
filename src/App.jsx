@@ -12,6 +12,8 @@ import Calendar from './pages/Calendar/Calendar'
 import Career from './pages/Career/Career'
 import Honors from './pages/Honors/Honors'
 
+import SmoothScroll from './components/SmoothScroll/SmoothScroll'
+
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true)
   const location = useLocation()
@@ -39,6 +41,7 @@ function AppContent() {
   return (
     <>
       {isLoading && <LoadingScreen onLoadComplete={() => setIsLoading(false)} />}
+      <SmoothScroll />
       <CustomScrollbar />
       <Header />
       {location.pathname === '/' && <AnimatedBackground
@@ -46,6 +49,7 @@ function AppContent() {
         videoOpacity={1.0}
         videoFilter="sepia(1) hue-rotate(190deg) saturate(2) brightness(0.2) contrast(1.1)"
         videoMixBlendMode="screen"
+        className="global-bg"
       />}
 
       <Routes>

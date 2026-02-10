@@ -10,7 +10,8 @@ const AnimatedBackground = ({
     videoOpacity = 0.15,
     videoFilter = "invert(1) contrast(1.2)",
     videoMixBlendMode = "multiply",
-    zIndex = -1
+    zIndex = -1,
+    className = ""
 }) => {
     const videoForwardRef = useRef(null);
     const videoReverseRef = useRef(null);
@@ -93,7 +94,7 @@ const AnimatedBackground = ({
     };
 
     return (
-        <div style={styles.container} className="animated-bg">
+        <div style={styles.container} className={`animated-bg ${className}`}>
             <div className="bg-video-wrapper" style={styles.wrapper}>
                 <video
                     ref={videoForwardRef}

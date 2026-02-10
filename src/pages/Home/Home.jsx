@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HeroCard from '../../components/HeroCard/HeroCard';
 import ContentSection from '../../components/ContentSection/ContentSection';
 import LegacySection from '../../components/LegacySection/LegacySection';
+import FanCards from '../../components/FanCards/FanCards';
 import SignatureSVG from '../../components/SignatureSVG/SignatureSVG';
 import './Home.css';
 
@@ -91,6 +92,14 @@ const Home = () => {
                 // Reduce baseImg opacity (but keep visible)
                 tl.to("#baseImg", {
                     opacity: 0.5,
+                    ease: "power2.inOut"
+                }, "<");
+
+                // Transition GLOBAL background to ContentSection Blue (#0090D0)
+                // This ensures that as user scrolls down and Hero shrinks, the background becomes ContentSection's color
+                tl.to(".global-bg", {
+                    backgroundColor: "#0090D0",
+                    filter: "sepia(1) hue-rotate(190deg) saturate(2) brightness(0.6) contrast(1.1)", // Brighter for ContentSection
                     ease: "power2.inOut"
                 }, "<");
 
@@ -246,6 +255,7 @@ const Home = () => {
 
             // --- Separate Trigger for LegacySection ---
             // When LegacySection enters viewport, change background to Dark (#0e2640 or #1a1a1a)
+            // Target ONLY .global-bg to avoid affecting HeroCard's local background
             ScrollTrigger.create({
                 trigger: ".legacy-section",
                 start: "top 80%", // Start changing when top of section is 80% down viewport
@@ -253,7 +263,7 @@ const Home = () => {
                 scrub: true,
                 onEnter: () => {
                     // Animate to Dark
-                    gsap.to(".animated-bg", {
+                    gsap.to(".global-bg", {
                         backgroundColor: "#0e2640",
                         filter: "sepia(1) hue-rotate(190deg) saturate(2) brightness(0.2) contrast(1.1)",
                         duration: 0.5
@@ -261,7 +271,7 @@ const Home = () => {
                 },
                 onLeaveBack: () => {
                     // Animate back to Blue (ContentSection)
-                    gsap.to(".animated-bg", {
+                    gsap.to(".global-bg", {
                         backgroundColor: "#0090D0",
                         filter: "sepia(1) hue-rotate(190deg) saturate(2) brightness(0.6) contrast(1.1)",
                         duration: 0.5
@@ -313,6 +323,7 @@ const Home = () => {
                 </div>
             </div>
             <LegacySection />
+            <FanCards />
         </main>
     );
 };
