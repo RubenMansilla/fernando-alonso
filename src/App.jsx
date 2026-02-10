@@ -41,7 +41,12 @@ function AppContent() {
       {isLoading && <LoadingScreen onLoadComplete={() => setIsLoading(false)} />}
       <CustomScrollbar />
       <Header />
-      {location.pathname === '/' && <AnimatedBackground />}
+      {location.pathname === '/' && <AnimatedBackground
+        backgroundColor="#0e2640"
+        videoOpacity={1.0}
+        videoFilter="sepia(1) hue-rotate(190deg) saturate(2) brightness(0.2) contrast(1.1)"
+        videoMixBlendMode="screen"
+      />}
 
       <Routes>
         <Route path="/" element={<Home />} />

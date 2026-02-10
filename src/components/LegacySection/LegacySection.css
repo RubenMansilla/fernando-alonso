@@ -1,0 +1,68 @@
+.legacy-section {
+    width: 100%;
+    /* Background handled by AnimatedBackground */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 5%;
+    position: relative;
+    z-index: 0;
+    /* Ensure it sits above fixed background if needed */
+}
+
+.legacy-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    line-height: 0.90;
+    position: relative;
+    z-index: 10;
+}
+
+.legacy-line {
+    white-space: nowrap;
+}
+
+/* Typography Base */
+.legacy-line span {
+    font-size: clamp(30px, 7.8vw, 115px);
+    text-transform: uppercase;
+}
+
+/* Fonts */
+.font-serif {
+    font-family: 'Brier', 'Times New Roman', serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.font-sans {
+    font-family: "Mona Sans Variable", Arial, sans-serif;
+    font-variation-settings: "wght" 800, "wdth" 90;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Colors */
+.color-green {
+    color: #b2c73a;
+    /* Aston Martin / Lime Green approximation */
+}
+
+.color-white {
+    color: #d1d1cf;
+    /* Off-white/Greyish as in image */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .legacy-content {
+        line-height: 0.9;
+    }
+
+    .legacy-line {
+        white-space: normal;
+        /* Allow wrapping on smaller screens if needed, or keep scale */
+    }
+}

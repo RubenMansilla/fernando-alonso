@@ -223,3 +223,17 @@ body:has(.navigation-overlay.open) .brand-logo {
 .main-header.scrolled .btn-menu .bar {
     background-color: #1a1a1a;
 }
+
+/* Calendar Mode */
+.main-header.calendar-mode .brand-logo {
+    color: #ffffff;
+}
+
+.main-header.calendar-mode .btn-menu {
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+
+.main-header.calendar-mode .btn-menu .bar {
+    background-color: #1a1a1a;
+}

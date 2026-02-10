@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HeroCard from '../../components/HeroCard/HeroCard';
 import ContentSection from '../../components/ContentSection/ContentSection';
+import LegacySection from '../../components/LegacySection/LegacySection';
 import SignatureSVG from '../../components/SignatureSVG/SignatureSVG';
 import './Home.css';
 
@@ -243,6 +244,31 @@ const Home = () => {
                 }, ">-0.05"); // Starts at 90% of scroll
             });
 
+            // --- Separate Trigger for LegacySection ---
+            // When LegacySection enters viewport, change background to Dark (#0e2640 or #1a1a1a)
+            ScrollTrigger.create({
+                trigger: ".legacy-section",
+                start: "top 80%", // Start changing when top of section is 80% down viewport
+                end: "top 20%",
+                scrub: true,
+                onEnter: () => {
+                    // Animate to Dark
+                    gsap.to(".animated-bg", {
+                        backgroundColor: "#0e2640",
+                        filter: "sepia(1) hue-rotate(190deg) saturate(2) brightness(0.2) contrast(1.1)",
+                        duration: 0.5
+                    });
+                },
+                onLeaveBack: () => {
+                    // Animate back to Blue (ContentSection)
+                    gsap.to(".animated-bg", {
+                        backgroundColor: "#0090D0",
+                        filter: "sepia(1) hue-rotate(190deg) saturate(2) brightness(0.6) contrast(1.1)",
+                        duration: 0.5
+                    });
+                }
+            });
+
         }, mainRef);
 
         return () => ctx.revert();
@@ -286,6 +312,7 @@ const Home = () => {
                     <HeroCard ref={heroLogicRef} />
                 </div>
             </div>
+            <LegacySection />
         </main>
     );
 };

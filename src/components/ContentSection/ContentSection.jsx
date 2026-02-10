@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import AnimatedBackground from '../AnimatedBackground/AnimatedBackground';
 import './ContentSection.css';
 
 const ContentSection = () => {
@@ -38,16 +37,6 @@ const ContentSection = () => {
 
     return (
         <section className="content-section">
-            <AnimatedBackground
-                backgroundColor="#0e2640"
-                containerPosition="absolute"
-                // Filter for "Deep Blue" matching helmet
-                // hue-rotate(190deg) shifts sepia (yellow-ish) to blue
-                videoFilter="sepia(1) hue-rotate(190deg) saturate(2) brightness(0.2) contrast(1.1)"
-                videoMixBlendMode="screen" // Light on dark
-                videoOpacity={1.0} // Max visibility
-                zIndex={0}
-            />
             <div className="text-row row-left">
                 {/* Remove inline style class for duration, handle via JS */}
                 <div className="marquee-track left" ref={trackLeftRef}>

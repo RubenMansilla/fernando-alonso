@@ -5,7 +5,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #0090D0;
+    /* background-color: #0090D0; REMOVED to let global AnimatedBackground show */
+    background-color: transparent;
     color: #e9eae4;
     /* Light off-white for text */
     overflow: hidden;

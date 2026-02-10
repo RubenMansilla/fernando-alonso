@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navigation from '../Navigation/Navigation';
 import './Header.css';
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation();
+    const isCalendar = location.pathname === '/calendar';
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -12,7 +15,7 @@ const Header = () => {
     return (
         <>
             <Navigation isOpen={isOpen} toggleMenu={toggleMenu} />
-            <header className="main-header">
+            <header className={`main-header ${isCalendar ? 'calendar-mode' : ''}`}>
                 <div className="brand-logo">
                     <span className="fname">
                         <span className="text-full">Fernando</span>
