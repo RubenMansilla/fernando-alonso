@@ -20,41 +20,84 @@ const cardsData = [
     { id: 7, img: background, title: "Suzuka", year: "2024" },
 ];
 
-// ---------- BASE (tu abanico actual) ----------
-// ---------- BASE (MISMA DISPOSICIÓN, UN POCO MÁS CURVA) ----------
-const BASE = [
-    { x: -420, y: 120, r: -17, s: 0.78, z: 1 }, // extremo
-    { x: -300, y: 80, r: -12, s: 0.86, z: 2 }, // 2ª (igual)
-    { x: -170, y: 48, r: -7, s: 0.94, z: 3 }, // 3ª → BAJADA (antes 40)
-    { x: 0, y: 30, r: 0, s: 1.00, z: 10 },// 4ª → LIGERAMENTE BAJA
-    { x: 170, y: 48, r: 7, s: 0.94, z: 3 }, // 5ª → BAJADA (antes 40)
-    { x: 300, y: 80, r: 12, s: 0.86, z: 2 }, // 6ª (igual)
-    { x: 420, y: 120, r: 17, s: 0.78, z: 1 }, // extremo
-];
 
+const getResponsiveBase = () => {
+    const w = window.innerWidth;
+
+    if (w >= 1024) {
+        // 🖥️ DESKTOP
+        const s = Math.min(w * 0.33, 420); // Spread dinámico (máx 420)
+        return [
+            { x: -s, y: 120, r: -17, s: 0.78, z: 1 },
+            { x: -s * 0.72, y: 80, r: -12, s: 0.86, z: 2 },
+            { x: -s * 0.4, y: 48, r: -7, s: 0.94, z: 3 },
+            { x: 0, y: 30, r: 0, s: 1.0, z: 10 },
+            { x: s * 0.4, y: 48, r: 7, s: 0.94, z: 3 },
+            { x: s * 0.72, y: 80, r: 12, s: 0.86, z: 2 },
+            { x: s, y: 120, r: 17, s: 0.78, z: 1 },
+        ];
+    }
+
+    if (w >= 768) {
+        // 📱 TABLET - Más curvatura
+        const s = Math.min(w * 0.28, 250);
+        return [
+            { x: -s, y: 115, r: -22, s: 0.80, z: 1 },
+            { x: -s * 0.65, y: 75, r: -15, s: 0.88, z: 2 },
+            { x: -s * 0.32, y: 40, r: -8, s: 0.95, z: 3 },
+            { x: 0, y: 20, r: 0, s: 1.0, z: 10 },
+            { x: s * 0.32, y: 40, r: 8, s: 0.95, z: 3 },
+            { x: s * 0.65, y: 75, r: 15, s: 0.88, z: 2 },
+            { x: s, y: 115, r: 22, s: 0.80, z: 1 },
+        ];
+    }
+
+    // 📱 MÓVIL - Curvatura más suave
+    const s = Math.min(w * 0.25, 85);
+    return [
+        { x: -s * 1.4, y: 90, r: -16, s: 0.82, z: 1 },
+        { x: -s * 0.9, y: 55, r: -11, s: 0.90, z: 2 },
+        { x: -s * 0.45, y: 30, r: -5, s: 0.96, z: 3 },
+        { x: 0, y: 18, r: 0, s: 1.0, z: 10 },
+        { x: s * 0.45, y: 30, r: 5, s: 0.96, z: 3 },
+        { x: s * 0.9, y: 55, r: 11, s: 0.90, z: 2 },
+        { x: s * 1.4, y: 90, r: 16, s: 0.82, z: 1 },
+    ];
+};
 
 export default function FanCards() {
     const containerRef = useRef(null);
 
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
+            let BASE = getResponsiveBase(); // 👈 BASE DINÁMICA
             const els = gsap.utils.toArray(".fan-card");
 
             const leftExtreme = 0;
             const rightExtreme = BASE.length - 1;
-
             const isExtreme = (i) => i === leftExtreme || i === rightExtreme;
 
-            // ---------- Aplicar poses con z-index fijo (NO se rompe el abanico) ----------
+            let activeIndex = null;
+            let leaveTimer = null;
+
+            const killAll = () => {
+                gsap.killTweensOf(els);
+            };
+
             const applyPose = (pose, opts = {}) => {
                 els.forEach((el, i) => {
                     el.style.zIndex = String(BASE[i]?.z ?? 1);
                 });
 
                 gsap.to(els, {
-                    duration: opts.duration ?? 0.24,
-                    ease: opts.ease ?? "power3.out",
-                    overwrite: "auto",
+                    duration: opts.duration ?? 0.42,
+                    ease: opts.ease ?? "power2.out",
+                    overwrite: true,
+                    stagger: opts.stagger || {
+                        each: 0.04,
+                        from: opts.from ?? "center",
+                        ease: "power1.out",
+                    },
                     x: (i) => pose[i].x,
                     y: (i) => pose[i].y,
                     rotation: (i) => pose[i].r,
@@ -64,28 +107,20 @@ export default function FanCards() {
                 });
             };
 
-            // ---------- GENERADOR DE HOVER (tu lógica final) ----------
             const makeHoverPose = (hoverIndex) => {
-                // === TUNING ===
-                const maxPush = 95;       // fuerza base
-                const falloff = 0.62;     // caída por distancia
-                const biasStrength = 0.9; // asimetría por “depth”
+                const w = window.innerWidth;
+                const maxPush = w < 768 ? Math.min(w * 0.15, 55) : Math.min(w * 0.1, 95);
+
+                const falloff = 0.62;
+                const biasStrength = 0.9;
                 const minSideFactor = 0.55;
 
-                const hoverLift = 8;
-                const hoverScale = 1.03;
+                const hoverLift = window.innerWidth < 768 ? 10 : 14;
+                const hoverScale = 1.1;
 
-                // damping específico (hover 2ª → reduce 3ª) y (hover 6ª → reduce 5ª)
                 const edgeNeighborDamp = 0.72;
+                const extremeNeighborDamp = 0.45;
 
-                // ✅ SOLO para: hover en 1ª -> reducir 2ª, hover en 7ª -> reducir 6ª
-                const extremeNeighborDamp = 0.45; // (0.35 fuerte, 0.55 suave)
-
-                const leftExtreme = 0;
-                const rightExtreme = BASE.length - 1;
-                const isExtreme = (i) => i === leftExtreme || i === rightExtreme;
-
-                // Depth (cuántas cartas hay hasta el extremo)
                 const leftDepth = hoverIndex - leftExtreme;
                 const rightDepth = rightExtreme - hoverIndex;
                 const totalDepth = Math.max(1, leftDepth + rightDepth);
@@ -102,37 +137,41 @@ export default function FanCards() {
                 const rightFactor = clamp(rightFactorRaw, minSideFactor, 1.6);
 
                 return BASE.map((p, j) => {
-                    // extremos nunca se mueven
-                    if (isExtreme(j)) return { ...p };
-
-                    // hovered: sutil lift/scale, sin cambiar z-index
                     if (j === hoverIndex) {
-                        return { ...p, y: p.y - hoverLift, s: p.s * hoverScale };
+                        return {
+                            ...p,
+                            y: p.y - (hoverLift + 18),
+                            s: p.s * hoverScale,
+                        };
                     }
 
-                    const dist = Math.abs(j - hoverIndex);
-                    if (dist === 0) return { ...p };
+                    if (isExtreme(j)) return { ...p };
 
+                    const dist = Math.abs(j - hoverIndex);
                     const isRight = j > hoverIndex;
                     const dir = isRight ? 1 : -1;
 
-                    // base decay por distancia
                     let basePush = maxPush * Math.pow(falloff, dist - 1);
                     const factor = isRight ? rightFactor : leftFactor;
 
-                    // ---- DAMPING ESPECÍFICO (lo que ya tenías) ----
-                    const isNearLeftEdge = hoverIndex === 1 && j === 2; // hover 2ª -> reduce 3ª
-                    const isNearRightEdge = hoverIndex === BASE.length - 2 && j === BASE.length - 3; // hover 6ª -> reduce 5ª
+                    const isNearLeftEdge = hoverIndex === 1 && j === 2;
+                    const isNearRightEdge =
+                        hoverIndex === BASE.length - 2 && j === BASE.length - 3;
 
                     if (dist === 1 && (isNearLeftEdge || isNearRightEdge)) {
                         basePush *= edgeNeighborDamp;
                     }
 
-                    // ---- ✅ SOLO vecino inmediato cuando hover está en extremos ----
-                    const isHoverOnLeftExtremeNeighbor = hoverIndex === leftExtreme && j === 1; // 1ª -> 2ª
-                    const isHoverOnRightExtremeNeighbor = hoverIndex === rightExtreme && j === rightExtreme - 1; // 7ª -> 6ª
+                    const isHoverOnLeftExtremeNeighbor =
+                        hoverIndex === leftExtreme && j === 1;
+                    const isHoverOnRightExtremeNeighbor =
+                        hoverIndex === rightExtreme && j === rightExtreme - 1;
 
-                    if (dist === 1 && (isHoverOnLeftExtremeNeighbor || isHoverOnRightExtremeNeighbor)) {
+                    if (
+                        dist === 1 &&
+                        (isHoverOnLeftExtremeNeighbor ||
+                            isHoverOnRightExtremeNeighbor)
+                    ) {
                         basePush *= extremeNeighborDamp;
                     }
 
@@ -143,8 +182,16 @@ export default function FanCards() {
                 });
             };
 
+            // Recalcular BASE en resize
+            const onResize = () => {
+                BASE = getResponsiveBase();
+                killAll();
+                applyPose(BASE, { duration: 0 });
+            };
 
-            // ---------- INTRO ----------
+            window.addEventListener("resize", onResize);
+
+            // INTRO
             gsap.set(els, { opacity: 0, x: 0, y: 40, rotation: 0, scale: 0.98 });
 
             gsap.to(els, {
@@ -162,23 +209,62 @@ export default function FanCards() {
 
             applyPose(BASE, { duration: 0 });
 
-            // ---------- HOVER EN TODAS ----------
+            // HOVER EN TODAS
             const handlers = [];
 
             els.forEach((el, i) => {
-                const onEnter = () => applyPose(makeHoverPose(i), { duration: 0.20 });
-                const onLeave = () => applyPose(BASE, { duration: 0.22 });
+                const onEnter = () => {
+                    if (leaveTimer) {
+                        clearTimeout(leaveTimer);
+                        leaveTimer = null;
+                    }
 
-                el.addEventListener("mouseenter", onEnter);
-                el.addEventListener("mouseleave", onLeave);
+                    activeIndex = i;
+                    killAll();
+
+                    applyPose(makeHoverPose(i), {
+                        duration: 0.38,
+                        from: i,
+                        ease: "power2.out",
+                        stagger: {
+                            each: 0.035,
+                            from: i,
+                            ease: "power1.out",
+                        },
+                    });
+                };
+
+                const onLeave = () => {
+                    leaveTimer = setTimeout(() => {
+                        if (activeIndex !== i) return;
+
+                        activeIndex = null;
+                        killAll();
+                        applyPose(BASE, {
+                            duration: 0.34,
+                            from: "center",
+                            ease: "power2.out",
+                            stagger: {
+                                each: 0.03,
+                                from: "center",
+                                ease: "power1.out",
+                            },
+                        });
+                    }, 40);
+                };
+
+                el.addEventListener("pointerenter", onEnter);
+                el.addEventListener("pointerleave", onLeave);
 
                 handlers.push({ el, onEnter, onLeave });
             });
 
             return () => {
+                window.removeEventListener("resize", onResize);
+                if (leaveTimer) clearTimeout(leaveTimer);
                 handlers.forEach(({ el, onEnter, onLeave }) => {
-                    el.removeEventListener("mouseenter", onEnter);
-                    el.removeEventListener("mouseleave", onLeave);
+                    el.removeEventListener("pointerenter", onEnter);
+                    el.removeEventListener("pointerleave", onLeave);
                 });
             };
         }, containerRef);
