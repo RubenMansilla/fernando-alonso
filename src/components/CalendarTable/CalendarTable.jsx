@@ -3,7 +3,7 @@ import Rive from "@rive-app/react-canvas";
 import "./CalendarTable.css";
 import { CIRCUIT_COUNTRY } from "../../components/Circuits/circuitMapping";
 import { calendarSourceData, LOCATION_TO_KEY, FLAGS } from "../../data/calendarData";
-import listTrackBg from "../../assets/placeholder/list-track-bg.svg";
+import listTrackBg from "../../assets/mask/list-track-bg.svg";
 
 export default function CalendarTable({ onCircuitSelect, selectedCircuit }) {
     const [isHoveringRow, setIsHoveringRow] = useState(false);

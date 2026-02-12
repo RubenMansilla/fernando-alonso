@@ -25,7 +25,7 @@
 .social-icon-wrapper {
     width: 50px;
     height: 50px;
-    margin-bottom: 2rem;
+    margin-bottom: 2.7rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -117,33 +117,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.fan-card-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 1.3rem 1.4rem;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-.fan-card-overlay h3 {
-    font-family: "Brier-Bold", serif;
-    font-size: 1.35rem;
-    margin: 0;
-    line-height: 1;
-}
-
-.fan-card-overlay span {
-    font-family: "Mona Sans Variable", sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    opacity: 0.85;
 }
 
 @media (max-width: 1023px) {

@@ -4,9 +4,13 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./FanCards.css";
 
-import cascoWebp from "../../assets/casco.webp";
-import fernandoPng from "../../assets/fernando.png";
-import background from "../../assets/background.png";
+import media_1 from "../../assets/social/media-1.jpg";
+import media_2 from "../../assets/social/media-2.jpg";
+import media_3 from "../../assets/social/media-3.jpg";
+import media_4 from "../../assets/social/media-4.jpg";
+import media_5 from "../../assets/social/media-5.jpg";
+import media_6 from "../../assets/social/media-6.jpg";
+import media_7 from "../../assets/social/media-7.jpg";
 
 // Social Icons
 import social1 from "../../assets/icon/social-1.png";
@@ -19,13 +23,13 @@ const socialIcons = [social1, social2, social3, social4];
 gsap.registerPlugin(ScrollTrigger);
 
 const cardsData = [
-    { id: 1, img: fernandoPng, title: "Monaco", year: "2023" },
-    { id: 2, img: cascoWebp, title: "Brazil", year: "2023" },
-    { id: 3, img: background, title: "Zandvoort", year: "2023" },
-    { id: 4, img: fernandoPng, title: "Qatar", year: "2024" },
-    { id: 5, img: cascoWebp, title: "Miami", year: "2024" },
-    { id: 6, img: fernandoPng, title: "Silverstone", year: "2024" },
-    { id: 7, img: background, title: "Suzuka", year: "2024" },
+    { id: 1, img: media_2 },
+    { id: 2, img: media_5 },
+    { id: 3, img: media_4 },
+    { id: 4, img: media_3 },
+    { id: 5, img: media_1 },
+    { id: 6, img: media_6 },
+    { id: 7, img: media_7 },
 ];
 
 
@@ -334,10 +338,6 @@ export default function FanCards() {
                                 alt={`${card.title} ${card.year}`}
                                 className="fan-card-img"
                             />
-                            <div className="fan-card-overlay">
-                                <h3>{card.title}</h3>
-                                <span>{card.year}</span>
-                            </div>
                         </div>
                     </div>
                 ))}
