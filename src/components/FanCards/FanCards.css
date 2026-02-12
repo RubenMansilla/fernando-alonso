@@ -1,5 +1,3 @@
-/* src/components/FanCards/FanCards.css */
-
 .fan-cards-section {
     min-height: 100vh;
     width: 100%;
@@ -7,12 +5,73 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-block: 20rem;
+    padding-block: 10rem;
     padding-inline: 2rem;
-    /* Safety margin for cards spread */
-    overflow: hidden;
-    /* Avoid horizontal scroll during animations */
+    overflow: visible;
     position: relative;
+    z-index: 20;
+    background-color: #f4f4ed;
+}
+
+.fan-cards-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 0.4rem;
+    pointer-events: none;
+}
+
+.social-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.social-rotator-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+    /* Hide all by default */
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.social-rotator-icon.active {
+    display: block;
+    /* Show only the active one instantly */
+}
+
+/* Specific fix for social-2.png if it looks too large */
+.social-rotator-icon:nth-child(2) {
+    transform: scale(0.8);
+}
+
+.title-up {
+    font-family: "Mona Sans Variable", Arial, sans-serif;
+    font-variation-settings: "wght" 800, "wdth" 90;
+    font-weight: 700;
+    font-size: clamp(2.2rem, 4.5vw, 4.5rem);
+    text-transform: uppercase;
+    color: #111112;
+    line-height: 0.85;
+}
+
+.title-socials {
+    font-family: 'Brier', 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: clamp(2.2rem, 4.5vw, 4.8rem);
+    /* Slightly decreased */
+    text-transform: uppercase;
+    color: #111112;
+    line-height: 0.85;
+    margin-top: 0.4rem;
 }
 
 .fan-cards-container {

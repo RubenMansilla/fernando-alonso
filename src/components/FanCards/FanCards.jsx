@@ -1,5 +1,5 @@
 // src/components/FanCards/FanCards.jsx
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./FanCards.css";
@@ -7,6 +7,14 @@ import "./FanCards.css";
 import cascoWebp from "../../assets/casco.webp";
 import fernandoPng from "../../assets/fernando.png";
 import background from "../../assets/background.png";
+
+// Social Icons
+import social1 from "../../assets/icon/social-1.png";
+import social2 from "../../assets/icon/social-2.png";
+import social3 from "../../assets/icon/social-3.png";
+import social4 from "../../assets/icon/social-4.png";
+
+const socialIcons = [social1, social2, social3, social4];
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -67,6 +75,8 @@ const getResponsiveBase = () => {
 
 export default function FanCards() {
     const containerRef = useRef(null);
+    const [iconIndex, setIconIndex] = useState(0);
+    const iconRef = useRef(null);
 
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
@@ -191,23 +201,40 @@ export default function FanCards() {
 
             window.addEventListener("resize", onResize);
 
-            // INTRO
-            gsap.set(els, { opacity: 0, x: 0, y: 40, rotation: 0, scale: 0.98 });
+            // INTRO: Rising stack then blooming fan
+            gsap.set(els, { opacity: 0, x: 0, y: 150, rotation: 0, scale: 0.95 });
+            gsap.set(".fan-cards-title", { opacity: 0, y: 30 });
 
-            gsap.to(els, {
-                opacity: 1,
-                duration: 0.85,
-                ease: "power3.out",
-                stagger: 0.06,
+            const introTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: containerRef.current,
-                    start: "top 70%",
+                    start: "top 25%",
                     toggleActions: "play none none reverse",
-                },
-                onComplete: () => applyPose(BASE, { duration: 0.45 }),
+                }
             });
 
-            applyPose(BASE, { duration: 0 });
+            // Stage 1: Rising in a stack + Title fade in
+            introTl.to([els, ".fan-cards-title"], {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "power2.out",
+                stagger: 0.08,
+            });
+
+            // Stage 2: Spreading into fan (Blooming)
+            introTl.to(els, {
+                x: (i) => BASE[i].x,
+                y: (i) => BASE[i].y,
+                rotation: (i) => BASE[i].r,
+                scale: (i) => BASE[i].s,
+                duration: 0.7,
+                ease: "back.out(1.4)",
+                stagger: {
+                    each: 0.04,
+                    from: "center"
+                }
+            }, "-=0.35"); // Solapamiento
 
             // HOVER EN TODAS
             const handlers = [];
@@ -270,10 +297,34 @@ export default function FanCards() {
         }, containerRef);
 
         return () => ctx.revert();
-    }, []);
+    }, []); // REMOVED iconIndex dependency
+
+    // Dedicated effect for icon rotation - NO ANIMATION
+    useEffect(() => {
+        const iconInterval = setInterval(() => {
+            const next = (iconIndex + 1) % socialIcons.length;
+            setIconIndex(next);
+        }, 500);
+
+        return () => clearInterval(iconInterval);
+    }, [iconIndex]);
 
     return (
         <section ref={containerRef} className="fan-cards-section">
+            <div className="fan-cards-title">
+                <div className="social-icon-wrapper">
+                    {socialIcons.map((icon, i) => (
+                        <img
+                            key={i}
+                            src={icon}
+                            alt={`Social Icon ${i + 1}`}
+                            className={`social-rotator-icon ${i === iconIndex ? 'active' : ''}`}
+                        />
+                    ))}
+                </div>
+                <span className="title-up">what’s up</span>
+                <span className="title-socials">On Socials</span>
+            </div>
             <div className="fan-cards-container" aria-label="Fan cards gallery">
                 {cardsData.map((card) => (
                     <div key={card.id} className="fan-card">
