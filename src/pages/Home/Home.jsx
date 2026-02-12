@@ -255,7 +255,7 @@ const Home = () => {
             });
 
             // --- Separate Trigger for LegacySection ---
-            // When LegacySection enters viewport, change background to Dark (#0e2640 or #1a1a1a)
+            // When LegacySection enters viewport, change background to Dark (#1c2230 )
             // Target ONLY .global-bg to avoid affecting HeroCard's local background
             ScrollTrigger.create({
                 trigger: ".legacy-section",
@@ -265,7 +265,7 @@ const Home = () => {
                 onEnter: () => {
                     // Animate to Dark
                     gsap.to(".global-bg", {
-                        backgroundColor: "#0e2640",
+                        backgroundColor: "#1c2230",
                         filter: "sepia(1) hue-rotate(190deg) saturate(2) brightness(0.2) contrast(1.1)",
                         duration: 0.5
                     });

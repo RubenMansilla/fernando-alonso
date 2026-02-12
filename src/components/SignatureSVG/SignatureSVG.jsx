@@ -22,7 +22,7 @@ const SignatureSVG = () => {
                 <path
                     className="sig-path sig-fill"
                     d={pathData}
-                    fill="#2c8ecc"
+                    fill="#3a8bc7"
                     fillOpacity={0}
                     stroke="none"
                 />
@@ -32,7 +32,7 @@ const SignatureSVG = () => {
                     className="sig-path sig-stroke"
                     d={pathData}
                     fill="none"
-                    stroke="#2c8ecc"
+                    stroke="#3a8bc7"
                     strokeWidth="4"
                     strokeLinecap="round"
                     strokeLinejoin="round"
