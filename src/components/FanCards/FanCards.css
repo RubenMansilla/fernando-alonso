@@ -5,7 +5,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-block: 10rem;
+    padding-top: 10rem;
     padding-inline: 2rem;
     overflow: visible;
     position: relative;
@@ -67,7 +67,6 @@
     font-family: 'Brier', 'Times New Roman', serif;
     font-weight: 700;
     font-size: clamp(2.2rem, 4.5vw, 4.8rem);
-    /* Slightly decreased */
     text-transform: uppercase;
     color: #111112;
     line-height: 0.85;
@@ -102,15 +101,6 @@
     border-radius: 48px;
     overflow: hidden;
     background: #fff;
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
-    /* Importante: NO metas transform aquí para el efecto global, lo hace GSAP en .fan-card */
-    transition: box-shadow 0.25s ease;
-}
-
-/* El “look” del hover del ejemplo lo controla GSAP (sube/escala y junta los lados).
-   Aquí solo refinamos sombra/feeling */
-.fan-card:hover .fan-card-inner {
-    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.32);
 }
 
 .fan-card-img {
@@ -141,4 +131,39 @@
     .fan-card-inner {
         border-radius: 24px;
     }
+}
+
+/* Social Footer */
+.fan-social-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 8rem;
+    width: 100%;
+    z-index: 5;
+}
+
+.fan-social-title {
+    font-family: "Brier", serif;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    color: #111112;
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.fan-social-links {
+    display: flex;
+    gap: clamp(1rem, 2vw, 3rem);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.fan-social-link {
+    font-family: "Mona Sans Variable", sans-serif;
+    font-variation-settings: "wght" 800, "wdth" 90;
+    font-weight: 800;
+    font-size: 13px;
+    color: #111112;
+    text-decoration: none;
 }

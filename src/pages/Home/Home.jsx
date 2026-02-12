@@ -6,6 +6,7 @@ import ContentSection from '../../components/ContentSection/ContentSection';
 import LegacySection from '../../components/LegacySection/LegacySection';
 import FanCards from '../../components/FanCards/FanCards';
 import SignatureSVG from '../../components/SignatureSVG/SignatureSVG';
+import Footer from '../../components/Footer/Footer';
 import './Home.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -324,6 +325,7 @@ const Home = () => {
             </div>
             <LegacySection />
             <FanCards />
+            <Footer />
         </main>
     );
 };

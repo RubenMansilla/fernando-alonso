@@ -342,6 +342,16 @@ export default function FanCards() {
                     </div>
                 ))}
             </div>
+
+            <div className="fan-social-footer">
+                <h3 className="fan-social-title">Follow Lando on social media</h3>
+                <div className="fan-social-links">
+                    <a href="#" className="fan-social-link">TIKTOK</a>
+                    <a href="#" className="fan-social-link">INSTAGRAM</a>
+                    <a href="#" className="fan-social-link">YOUTUBE</a>
+                    <a href="#" className="fan-social-link">TWITCH</a>
+                </div>
+            </div>
         </section>
     );
 }
