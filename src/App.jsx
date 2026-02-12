@@ -14,6 +14,16 @@ import Honors from './pages/Honors/Honors'
 
 import SmoothScroll from './components/SmoothScroll/SmoothScroll'
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true)
   const location = useLocation()
@@ -40,6 +50,7 @@ function AppContent() {
 
   return (
     <>
+      <ScrollToTop />
       {isLoading && <LoadingScreen onLoadComplete={() => setIsLoading(false)} />}
       <SmoothScroll />
       <CustomScrollbar />
