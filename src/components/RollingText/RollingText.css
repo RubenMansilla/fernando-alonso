@@ -1,0 +1,37 @@
+.rolling-text-wrapper {
+    display: inline-block;
+    height: 1.4em;
+    /* Adjust based on usage */
+    overflow: hidden;
+    position: relative;
+    vertical-align: top;
+}
+
+.rolling-text-content,
+.rolling-text-clone {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.rolling-text-content {
+    position: relative;
+}
+
+.rolling-text-clone {
+    transform: translateY(100%);
+}
+
+.char {
+    display: inline-block;
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hover effects should be handled by the parent container usually, 
+   but we can add a helper class or expect parent hover. 
+   In Navigation.css: .nav-link:hover .char { ... } 
+   We will rely on parent hover targeting .char 
+   OR separate this.
+*/

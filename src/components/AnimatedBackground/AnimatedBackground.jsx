@@ -5,7 +5,7 @@ import videoForwardSrc from '../../assets/video/video-topografia.mp4';
 import videoReverseSrc from '../../assets/video/video-topografia-reverse.mp4';
 
 const AnimatedBackground = ({
-    backgroundColor = "#F9F9F4",
+    backgroundColor = "#f0f1eb",
     containerPosition = "fixed",
     videoOpacity = 0.15,
     videoFilter = "invert(1) contrast(1.2)",

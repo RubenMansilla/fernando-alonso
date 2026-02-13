@@ -148,7 +148,8 @@
     font-size: clamp(1.4rem, 2.5vw, 2rem);
     color: #111112;
     font-weight: 700;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
+    /* Reduced from 2rem */
     text-align: center;
 }
 
@@ -166,4 +167,96 @@
     font-size: 13px;
     color: #111112;
     text-decoration: none;
+    position: relative;
+    display: inline-block;
+}
+
+/* Animations equivalent to Navigation.jsx */
+@keyframes blockReveal {
+    0% {
+        transform: scaleX(0);
+        transform-origin: 0% 50%;
+    }
+
+    49% {
+        transform: scaleX(1);
+        transform-origin: 0% 50%;
+    }
+
+    51% {
+        transform: scaleX(1);
+        transform-origin: 100% 50%;
+    }
+
+    100% {
+        transform: scaleX(0);
+        transform-origin: 100% 50%;
+    }
+}
+
+@keyframes textReveal {
+    0% {
+        opacity: 0;
+    }
+
+    49% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.reveal-text {
+    opacity: 0;
+    display: block;
+    position: relative;
+    z-index: 1;
+    animation: textReveal 0.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.reveal-block {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -4px;
+    right: -4px;
+    background-color: #111112;
+    /* Matching text color */
+    z-index: 10;
+    transform: scaleX(0);
+    transform-origin: 0% 50%;
+    pointer-events: none;
+    animation: blockReveal 0.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+/* Staggered delays */
+.fan-social-link:nth-child(1) .reveal-text,
+.fan-social-link:nth-child(1) .reveal-block {
+    animation-delay: 0.1s;
+}
+
+.fan-social-link:nth-child(2) .reveal-text,
+.fan-social-link:nth-child(2) .reveal-block {
+    animation-delay: 0.2s;
+}
+
+.fan-social-link:nth-child(3) .reveal-text,
+.fan-social-link:nth-child(3) .reveal-block {
+    animation-delay: 0.3s;
+}
+
+.fan-social-link:nth-child(4) .reveal-text,
+.fan-social-link:nth-child(4) .reveal-block {
+    animation-delay: 0.4s;
+}
+
+/* Rolling Text Hover */
+.fan-social-link:hover .char {
+    transform: translateY(-100%);
 }

@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HeroCard from '../../components/HeroCard/HeroCard';
 import ContentSection from '../../components/ContentSection/ContentSection';
 import LegacySection from '../../components/LegacySection/LegacySection';
+import HorizontalScrollSection from '../../components/HorizontalScrollSection/HorizontalScrollSection';
 import FanCards from '../../components/FanCards/FanCards';
 import SignatureSVG from '../../components/SignatureSVG/SignatureSVG';
 import Footer from '../../components/Footer/Footer';
@@ -324,6 +325,7 @@ const Home = () => {
                 </div>
             </div>
             <LegacySection />
+            <HorizontalScrollSection />
             <FanCards />
             <Footer />
         </main>

@@ -1,0 +1,60 @@
+/* ── Pinned wrapper (transparent so AnimatedBackground shows through) ── */
+.hs-section {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+}
+
+/* ── Color overlay (fades in over AnimatedBackground) ── */
+.hs-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: #f0f1eb;
+    opacity: 0;
+    /* starts invisible, GSAP fades it in */
+    pointer-events: none;
+}
+
+/* ── The wide track that slides left (above overlay) ── */
+.hs-track {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 3vw;
+    height: 100%;
+    padding: 0 5vw;
+    will-change: transform;
+}
+
+/* ── Individual photo panel ── */
+.hs-panel {
+    flex: 0 0 auto;
+    width: 55vw;
+    height: 75vh;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.hs-panel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .hs-panel {
+        width: 80vw;
+        height: 60vh;
+    }
+
+    .hs-track {
+        gap: 5vw;
+        padding: 0 4vw;
+    }
+}

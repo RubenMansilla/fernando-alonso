@@ -1,15 +1,16 @@
 .legacy-section {
     min-height: 100vh;
     width: 100%;
-    /* Background handled by AnimatedBackground */
+    background-color: transparent;
+    /* Solid bg to block pinned sections beneath */
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0 5%;
     position: relative;
     z-index: 10;
-    margin-top: 4.5rem;
-    /* Ensure it sits above fixed background if needed */
+    padding-top: 4.5rem;
+    padding-bottom: 5rem;
 }
 
 .legacy-content {

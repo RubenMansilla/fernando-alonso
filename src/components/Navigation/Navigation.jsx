@@ -211,20 +211,20 @@ const Navigation = ({ isOpen, toggleMenu }) => {
                             <span className="reveal-block"></span>
                         </a>
                         <div className="social-links">
-                            <a href="#">
+                            <a href="https://www.tiktok.com/@fernandoalonso?lang=es" target="_blank" rel="noopener noreferrer">
                                 <span className="reveal-text"><RollingText text="TIKTOK" /></span>
                                 <span className="reveal-block"></span>
                             </a>
-                            <a href="#">
+                            <a href="https://www.instagram.com/fernandoalo_oficial/" target="_blank" rel="noopener noreferrer">
                                 <span className="reveal-text"><RollingText text="INSTAGRAM" /></span>
                                 <span className="reveal-block"></span>
                             </a>
-                            <a href="#">
+                            <a href="https://www.youtube.com/channel/UCwvrVuFiKDuZl1AUM-pTKKA" target="_blank" rel="noopener noreferrer">
                                 <span className="reveal-text"><RollingText text="YOUTUBE" /></span>
                                 <span className="reveal-block"></span>
                             </a>
-                            <a href="#">
-                                <span className="reveal-text"><RollingText text="TWITCH" /></span>
+                            <a href="https://x.com/alo_oficial" target="_blank" rel="noopener noreferrer">
+                                <span className="reveal-text"><RollingText text="TWITTER" /></span>
                                 <span className="reveal-block"></span>
                             </a>
                         </div>

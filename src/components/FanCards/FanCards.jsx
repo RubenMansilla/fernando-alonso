@@ -77,6 +77,8 @@ const getResponsiveBase = () => {
     ];
 };
 
+import RollingText from "../RollingText/RollingText";
+
 export default function FanCards() {
     const containerRef = useRef(null);
     const [iconIndex, setIconIndex] = useState(0);
@@ -346,12 +348,25 @@ export default function FanCards() {
             <div className="fan-social-footer">
                 <h3 className="fan-social-title">Follow Fernando on social media</h3>
                 <div className="fan-social-links">
-                    <a href="#" className="fan-social-link">TIKTOK</a>
-                    <a href="#" className="fan-social-link">INSTAGRAM</a>
-                    <a href="#" className="fan-social-link">YOUTUBE</a>
-                    <a href="#" className="fan-social-link">TWITCH</a>
+                    <a href="https://www.tiktok.com/@fernandoalonso?lang=es" className="fan-social-link" target="_blank" rel="noopener noreferrer">
+                        <span className="reveal-text"><RollingText text="TIKTOK" /></span>
+                        <span className="reveal-block"></span>
+                    </a>
+                    <a href="https://www.instagram.com/fernandoalo_oficial/" className="fan-social-link" target="_blank" rel="noopener noreferrer">
+                        <span className="reveal-text"><RollingText text="INSTAGRAM" /></span>
+                        <span className="reveal-block"></span>
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCwvrVuFiKDuZl1AUM-pTKKA" className="fan-social-link" target="_blank" rel="noopener noreferrer">
+                        <span className="reveal-text"><RollingText text="YOUTUBE" /></span>
+                        <span className="reveal-block"></span>
+                    </a>
+                    <a href="https://x.com/alo_oficial" className="fan-social-link" target="_blank" rel="noopener noreferrer">
+                        <span className="reveal-text"><RollingText text="TWITTER" /></span>
+                        <span className="reveal-block"></span>
+                    </a>
                 </div>
             </div>
         </section>
     );
 }
+
