@@ -58,3 +58,30 @@ export const CIRCUIT_ORDER = [
     "speilberg", "montreal", "barcelona", "imola", "melbourne", "shanghai",
     "suzuka", "sakhir", "jeddah", "miami", "monaco", "silverstone"
 ];
+
+export const CIRCUIT_INDEX_MAP = {
+    "sakhir": 0,
+    "jeddah": 1,
+    "melbourne": 2,
+    "suzuka": 3,
+    "shanghai": 4,
+    "miami": 5,
+    "imola": 6,
+    "monaco": 7,
+    "montreal": 8,
+    "barcelona": 9,
+    "speilberg": 10,
+    "silverstone": 11,
+    "mogyorod": 12,
+    "spa-francorchamps": 13,
+    "zandvoort": 14,
+    "monza": 15,
+    "baku": 16,
+    "singapore": 17,
+    "austin": 18,
+    "mexico-city": 19,
+    "sao-paulo": 20,
+    "las-vegas": 21,
+    "lusail": 22,
+    "yas-marina": 23
+};

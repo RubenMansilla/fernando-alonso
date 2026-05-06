@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Rive from "@rive-app/react-canvas";
 import "./CalendarTable.css";
 import { CIRCUIT_COUNTRY } from "../../components/Circuits/circuitMapping";
@@ -118,7 +118,7 @@ export default function CalendarTable({ onCircuitSelect, selectedCircuit }) {
                                     src="/rive/circuits.riv"
                                     artboard="circuits"
                                     animations={["color_black", "rotations", hoveredCircuit]}
-                                    autoplay={true}
+                                    autoPlay={true}
                                 />
                             </div>
                         )}

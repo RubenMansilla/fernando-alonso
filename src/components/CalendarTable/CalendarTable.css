@@ -87,7 +87,7 @@
 
 .calendar-row:hover,
 .calendar-row.active {
-    background-color: #282c20;
+    background-color: #1b222c;
     /* Color de fondo al hacer hover */
 }
 
@@ -208,6 +208,7 @@
     z-index: 9999;
 
     /* para que NO bloquee el hover de las filas */
+    pointer-events: none;
     opacity: 0;
     transform: translate3d(-9999px, -9999px, 0);
 

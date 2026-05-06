@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./Calendar.css";
 import CalendarTable from "../../components/CalendarTable/CalendarTable";
 import { TrackDisplay3D } from "../../components/Circuits/TrackDisplay3D";
-import { CIRCUIT_MESH_MAP } from "../../components/Circuits/circuitMapping";
+import { CIRCUIT_MESH_MAP, CIRCUIT_INDEX_MAP } from "../../components/Circuits/circuitMapping";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { calendarSourceData, LOCATION_TO_KEY } from "../../data/calendarData";
@@ -11,8 +11,8 @@ gsap.registerPlugin(ScrollToPlugin);
 
 export default function Calendar() {
     const [selectedCircuit, setSelectedCircuit] = useState(null);
-    const visualizerRef = React.useRef(null);
-    const hasScrolledRef = React.useRef(false); // Ref to track if we've already done the initial scroll
+    const visualizerRef = useRef(null);
+    const hasScrolledRef = useRef(false); // Ref to track if we've already done the initial scroll
 
     useEffect(() => {
         // Find next race
