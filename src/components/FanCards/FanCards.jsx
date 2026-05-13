@@ -348,7 +348,7 @@ export default function FanCards() {
             <div className="fan-social-footer">
                 <h3 className="fan-social-title">Follow Fernando on social media</h3>
                 <div className="fan-social-links">
-                    <a href="https://www.tiktok.com/@fernandoalonso?lang=es" className="fan-social-link" target="_blank" rel="noopener noreferrer">
+                    <a href="https://www.tiktok.com/@fernandoalonso" className="fan-social-link" target="_blank" rel="noopener noreferrer">
                         <span className="reveal-text"><RollingText text="TIKTOK" /></span>
                         <span className="reveal-block"></span>
                     </a>

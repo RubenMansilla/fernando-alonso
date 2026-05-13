@@ -211,7 +211,7 @@ const Navigation = ({ isOpen, toggleMenu }) => {
                             <span className="reveal-block"></span>
                         </a>
                         <div className="social-links">
-                            <a href="https://www.tiktok.com/@fernandoalonso?lang=es" target="_blank" rel="noopener noreferrer">
+                            <a href="https://www.tiktok.com/@fernandoalonso" target="_blank" rel="noopener noreferrer">
                                 <span className="reveal-text"><RollingText text="TIKTOK" /></span>
                                 <span className="reveal-block"></span>
                             </a>
