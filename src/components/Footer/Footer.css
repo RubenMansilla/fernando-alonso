@@ -52,7 +52,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 12%;
+    padding-top: 30%;
 }
 
 .pages-content {
@@ -384,24 +384,31 @@
         margin-top: 0;
     }
 
-    .footer-corner-text {
-        font-size: 9px;
+    .footer-legal-container {
+        position: absolute;
         bottom: 12px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        z-index: 20;
+    }
+
+    .footer-corner-text {
+        position: static;
+        font-size: 9px;
+        bottom: auto;
+        transform: none;
+        width: auto;
+        text-align: center;
     }
 
     .left-corner {
-        left: 50%;
-        transform: translateX(calc(-100% - 8px));
-        text-align: right;
-        width: max-content;
+        left: auto;
     }
 
     .right-corner {
         right: auto;
-        left: 50%;
-        transform: translateX(8px);
-        text-align: left;
-        width: max-content;
     }
 
     .pages-title {

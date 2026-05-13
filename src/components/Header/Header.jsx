@@ -7,6 +7,7 @@ const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
     const isCalendar = location.pathname === '/calendar';
+    const isCareer = location.pathname === '/career';
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -15,7 +16,7 @@ const Header = () => {
     return (
         <>
             <Navigation isOpen={isOpen} toggleMenu={toggleMenu} />
-            <header className={`main-header ${isCalendar ? 'calendar-mode' : ''}`}>
+            <header className={`main-header ${isCalendar ? 'calendar-mode' : ''} ${isCareer ? 'career-mode' : ''}`}>
                 <div className="brand-logo">
                     <span className="fname">
                         <span className="text-full">Fernando</span>

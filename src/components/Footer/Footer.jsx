@@ -96,11 +96,13 @@ const Footer = () => {
                 </div>
             </div>
 
-            <div className="footer-corner-text left-corner">
-                SITIO NO OFICIAL - FAN MADE
-            </div>
-            <div className="footer-corner-text right-corner">
-                Politica de Privacidad
+            <div className="footer-legal-container">
+                <div className="footer-corner-text left-corner">
+                    SITIO NO OFICIAL - FAN MADE
+                </div>
+                <div className="footer-corner-text right-corner">
+                    Politica de Privacidad
+                </div>
             </div>
         </footer>
     );
